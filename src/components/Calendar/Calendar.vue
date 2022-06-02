@@ -122,17 +122,27 @@ export default {
           // Navigation pane
           default: ({ data }) => {
             const { position, page } = data;
-            return h(
-              CalendarNav,
-              {
-                value: page,
+            return (
+              // allow custom popover from user
+              this.safeSlot('nav-popover', {
+                page,
                 position,
                 validator: e => this.canMove(e, { position }),
                 onInput: e => this.move(e),
-              },
-              {
-                ...this.$slots,
-              },
+              }) ||
+              // default nav popover
+              h(
+                CalendarNav,
+                {
+                  value: page,
+                  position,
+                  validator: e => this.canMove(e, { position }),
+                  onInput: e => this.move(e),
+                },
+                {
+                  ...this.$slots,
+                },
+              )
             );
           },
         },
