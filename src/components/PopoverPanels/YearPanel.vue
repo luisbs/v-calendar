@@ -82,7 +82,7 @@ export default {
         ...this.$slots,
         'nav-title': createSlot(
           'year-panel-title',
-          { year: yearIndex.value, items: activeItems },
+          { year: yearIndex.value, items: activeItems.value },
           () => {
             const sorted = activeItems.value
               .map(item => item.value.year)

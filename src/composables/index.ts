@@ -1,7 +1,7 @@
 export { default as useCommons } from './useCommons';
-export type { MonthPage, SharedState } from './useCommons';
+export type { Day, Month, MonthPage, SharedState } from './useCommons';
 
-export { useRef, useSlots } from './useVue';
+export { hFor, hIf, useRef, useSlots } from './useVue';
 
 export {
   useActivePanel,
@@ -9,3 +9,13 @@ export {
   useYearsFilter,
 } from './usePanelItems';
 export type { PanelItem, PanelValue } from './usePanelItems';
+
+export { definePopoverEvents } from './usePopover';
+export type {
+  PopoverEventsOptions,
+  PopoverPosition,
+  PopoverVisibility,
+} from './usePopover';
+
+export { serializeWeeknumbersOptions } from './useWeeks';
+export type { WeeknumbersVisibility } from './useWeeks';

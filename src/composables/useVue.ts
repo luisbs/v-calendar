@@ -1,4 +1,32 @@
-import { Ref, ref, UnwrapRef, useSlots as baseUseSlots } from 'vue';
+import { h, isRef, Ref, ref, UnwrapRef, useSlots as baseUseSlots } from 'vue';
+
+/** Emulates a `v-if` */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function hIf(cond: unknown, ...args: any) {
+  if (cond) {
+    // @ts-expect-error un-orthodox call
+    return h(...args);
+  }
+  return undefined;
+}
+
+/** Emulates a `v-for` */
+export function hFor<T, R>(
+  arr: T[] | Ref<T[]>,
+  cb: (value: T, index: number, array: T[]) => R,
+): R[] {
+  if (isRef(arr) && Array.isArray(arr.value)) {
+    return arr.value.map(cb);
+  }
+
+  if (Array.isArray(arr)) {
+    return arr.map(cb);
+  }
+
+  return [];
+}
+
+// weekdayLabels.value.map()
 
 export function useSlots() {
   const slots = baseUseSlots();
