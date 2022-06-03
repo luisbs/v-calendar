@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineEmits, defineProps, withDefaults } from 'vue';
-import { onSpaceOrEnter } from '@/utils/helpers';
+import { onSpaceOrEnter } from '../../utils/helpers';
 
 export interface PopoverButtonOptions {
   enabled?: boolean;

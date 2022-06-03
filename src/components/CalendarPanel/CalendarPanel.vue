@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { computed, defineProps, withDefaults } from 'vue';
-import type {
-  MonthPage,
+import { getDefault } from '../../utils/defaults';
+import useCommons, { MonthPage } from '../../composables/useCommons';
+import {
+  definePopoverEvents,
   PopoverPosition,
   PopoverVisibility,
+} from '../../composables/usePopover';
+import CalendarPanelWeeks, {
   WeeknumbersVisibility,
-} from '@/composables';
-import { definePopoverEvents, useCommons } from '@/composables';
-import { getDefault } from '@/utils/defaults';
-import CalendarPanelWeeks from './CalendarPanelWeeks.vue';
+} from './CalendarPanelWeeks.vue';
 import CalendarDay from '../CalendarDay/CalendarDay.vue';
 
 export interface CalendarPanelOptions {
@@ -79,7 +80,7 @@ const navEvents = computed(() => {
         <CalendarDay :day="day" v-bind="$attrs">
           <!-- pass slot -->
           <template #day-content>
-            <slot name="day-content" />
+            <slot name="day-content" :day="day" />
           </template>
         </CalendarDay>
       </template>

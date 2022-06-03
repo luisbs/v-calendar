@@ -43,7 +43,6 @@
   },
   "dependencies": {
     "@popperjs/core": "2.4.0",
-    "@types/lodash": "^4.14.165",
     "date-fns": "^2.16.1",
     "date-fns-tz": "^1.0.12",
     "lodash": "^4.17.20"
@@ -53,6 +52,7 @@
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
+    "@types/lodash": "^4.14.165",
     "@typescript-eslint/eslint-plugin": "2.33.0",
     "@typescript-eslint/parser": "2.33.0",
     "@vitejs/plugin-vue": "^1.2.5",

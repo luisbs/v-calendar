@@ -1,4 +1,4 @@
-import { elementContains } from '@/utils/helpers';
+import { elementContains } from '../utils/helpers';
 
 function dispatchEvent(name: string, options: CustomEventInit) {
   document?.dispatchEvent(new CustomEvent(name, options));

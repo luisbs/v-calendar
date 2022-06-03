@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { h, isRef, Ref, ref, UnwrapRef, useSlots as baseUseSlots } from 'vue';
 
-/** Emulates a `v-if` */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+/**
+ * Emulates a `v-if`
+ */
 export function hIf(cond: unknown, ...args: any) {
   if (cond) {
     // @ts-expect-error un-orthodox call
@@ -10,7 +12,9 @@ export function hIf(cond: unknown, ...args: any) {
   return undefined;
 }
 
-/** Emulates a `v-for` */
+/**
+ * Emulates a `v-for`
+ */
 export function hFor<T, R>(
   arr: T[] | Ref<T[]>,
   cb: (value: T, index: number, array: T[]) => R,
@@ -26,17 +30,16 @@ export function hFor<T, R>(
   return [];
 }
 
-// weekdayLabels.value.map()
-
+/**
+ * Make easier to use the slots on a component
+ */
 export function useSlots() {
   const slots = baseUseSlots();
 
-  // eslint-disable-next-line
   const callSlot = (name: string, args?: any, fallback?: any) => {
     return typeof slots[name] === 'function' ? slots[name]?.(args) : fallback;
   };
 
-  // eslint-disable-next-line
   const createSlot = (name: string, args?: any, fallback?: any) => {
     if (typeof slots[name] === 'function') {
       return () => slots[name]?.(args);
@@ -51,6 +54,10 @@ export function useSlots() {
   };
 }
 
+/**
+ * Generates a reactive value and a setter function
+ * that uses the handler if is defined
+ */
 export function useRef<T>(
   initial: T,
   handler?: (newValue: T, oldValue: T) => T,

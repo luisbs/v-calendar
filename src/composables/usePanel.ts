@@ -1,4 +1,3 @@
-import { pad } from '@/utils/helpers';
 import { computed, Ref } from 'vue';
 import useCommons from './useCommons';
 
@@ -98,7 +97,7 @@ export function useMonthsFilter(
     return locale.getMonthDates().map((date, month) => {
       month++;
       return {
-        id: `${year}.${pad(String(month), 2)}`,
+        id: `${year}.${month < 10 ? '0' : ''}${month}`,
         label: locale.format(date, masks.navMonths),
         ariaLabel: locale.format(date, 'MMMM YYYY'),
 

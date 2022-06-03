@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed, defineEmits, defineProps, h } from 'vue';
-import {
-  hFor,
-  hIf,
-  serializeWeeknumbersOptions,
-  useCommons,
-  useSlots,
-} from '@/composables';
-import type { Day, WeeknumbersVisibility } from '@/composables';
+import useCommons, { Day } from '../../composables/useCommons';
+import { hFor, hIf, useSlots } from '../../composables/useVue';
+
+export type WeeknumbersVisibility =
+  | 'left'
+  | 'left-outside'
+  | 'right'
+  | 'right-outside';
 
 export interface CalendarPageOptions {
   days: Day[];
@@ -15,8 +15,8 @@ export interface CalendarPageOptions {
   showIsoWeeknumbers?: boolean | WeeknumbersVisibility;
 }
 
-defineProps<CalendarPageOptions>();
 defineEmits(['weeknumberclick']);
+const props = defineProps<CalendarPageOptions>();
 const { callSlot } = useSlots();
 
 // get the weekday labels based on locale
@@ -26,19 +26,33 @@ const weekdayLabels = computed(() => {
     .getWeekdayDates()
     .map(date => locale.format(date, masks.weekdays));
 });
+
+// serialize the `show-weeknumbers` props
+const showOptions = computed(() => {
+  const showNumbers = props.showWeeknumbers ?? props.showIsoWeeknumbers;
+  const opts = { show: false, left: true, inside: true };
+
+  if (typeof showNumbers !== 'string') {
+    return showNumbers === true ? { ...opts, show: true } : opts;
+  }
+
+  if (showNumbers.startsWith('right')) opts.left = false;
+  if (showNumbers.endsWith('outside')) opts.inside = false;
+
+  return opts;
+});
 </script>
 
-<script>
+<script lang="ts">
 export default {
   render() {
     const daysInWeek = locale.daysInWeek;
-    const weeknumbers = this.showWeeknumbers ?? this.showIsoWeeknumbers;
     const weeknumbersKey = this.showWeeknumbers
       ? 'weeknumber'
       : 'isoWeeknumber';
 
     // make easier to use the `showWeeknumbers` prop
-    const opts = serializeWeeknumbersOptions(weeknumbers);
+    const opts = showOptions.value;
     const showLeft = opts.show && opts.left;
     const showRight = opts.show && !opts.left;
 

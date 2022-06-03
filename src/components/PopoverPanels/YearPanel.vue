@@ -10,10 +10,9 @@ import {
 import {
   PanelValue,
   useActivePanel,
-  useRef,
-  useSlots,
   useYearsFilter,
-} from '@/composables';
+} from '../../composables/usePanel';
+import { useRef, useSlots } from '../../composables/useVue';
 
 export interface YearPanelOptions {
   modelValue: PanelValue;
@@ -59,7 +58,7 @@ const handleYearInput = (value: PanelValue) => {
 };
 </script>
 
-<script>
+<script lang="ts">
 import { h } from 'vue';
 import PopoverPanel from './PopoverPanel.vue';
 

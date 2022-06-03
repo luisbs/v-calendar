@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineEmits, defineProps, nextTick, ref, watch } from 'vue';
-import { PanelItem } from '@/composables';
+import { PanelItem } from '../../composables/usePanel';
 import PopoverButton from './PopoverButton.vue';
 import SvgIcon from '../SvgIcon/SvgIcon.vue';
 
