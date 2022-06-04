@@ -1,27 +1,13 @@
 <script setup lang="ts">
-import {
-  computed,
-  defineEmits,
-  defineProps,
-  onMounted,
-  watch,
-  withDefaults,
-} from 'vue';
-import {
-  PanelValue,
-  useActivePanel,
-  useYearsFilter,
-} from '../../composables/usePanel';
+import { computed, h, onMounted, watch } from 'vue';
+import { useActivePanel, useYearsFilter } from '../../composables/usePanel';
 import { useRef, useSlots } from '../../composables/useVue';
-
-export interface YearPanelOptions {
-  modelValue: PanelValue;
-  validator?: (value: Record<'year' | 'month', number>) => boolean;
-}
+import type { InputPanelOptions, PanelValue } from '#/options';
+import PopoverPanel from './PopoverPanel.vue';
 
 const { createSlot } = useSlots();
 const emit = defineEmits(['update:modelValue']);
-const props = withDefaults(defineProps<YearPanelOptions>(), {
+const props = withDefaults(defineProps<InputPanelOptions>(), {
   validator: () => true,
 });
 
@@ -59,9 +45,6 @@ const handleYearInput = (value: PanelValue) => {
 </script>
 
 <script lang="ts">
-import { h } from 'vue';
-import PopoverPanel from './PopoverPanel.vue';
-
 export default {
   render() {
     return h(

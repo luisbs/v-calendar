@@ -1,26 +1,9 @@
 import { elementContains } from '../utils/helpers';
+import { PopoverPosition, PopoverVisibility } from '#/options';
 
 function dispatchEvent(name: string, options: CustomEventInit) {
   document?.dispatchEvent(new CustomEvent(name, options));
 }
-
-export type PopoverVisibility = 'click' | 'hover' | 'hover-focus' | 'focus';
-export type PopoverPosition =
-  | 'auto'
-  | 'auto-start'
-  | 'auto-end'
-  | 'top'
-  | 'top-start'
-  | 'top-end'
-  | 'bottom'
-  | 'bottom-start'
-  | 'bottom-end'
-  | 'right'
-  | 'right-start'
-  | 'right-end'
-  | 'left'
-  | 'left-start'
-  | 'left-end';
 
 export interface PopoverEventsOptions {
   id: string;

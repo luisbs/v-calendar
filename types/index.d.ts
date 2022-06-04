@@ -14,3 +14,5 @@ export const PopoverRow:
 export const DatePicker:
   | Exclude<Plugin['install'], undefined>
   | DefineComponent;
+
+export * from './components';

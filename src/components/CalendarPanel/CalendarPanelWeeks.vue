@@ -1,21 +1,9 @@
 <script setup lang="ts">
 import { computed, defineEmits, defineProps, h } from 'vue';
-import { Day, useCommons } from '../../composables/useCommons';
+import { useCommons } from '../../composables/useCommons';
 import { hFor, hIf, useSlots } from '../../composables/useVue';
 
-export interface WeeknumbersOptions {
-  /** Defines if the weeknumbers should be showned */
-  side: false | 'left' | 'right';
-  /** Defines if the weeknumbers should be showned outside */
-  outside: boolean;
-  /** Defines if the ISO weeknumbers should be used */
-  iso: boolean;
-}
-
-export interface CalendarPanelWeeksOptions {
-  days: Day[];
-  weeknumbers: WeeknumbersOptions;
-}
+import type { CalendarPanelWeeksOptions } from '#/options';
 
 defineEmits(['weeknumberclick']);
 defineProps<CalendarPanelWeeksOptions>();

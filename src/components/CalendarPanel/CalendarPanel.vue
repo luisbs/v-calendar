@@ -1,35 +1,11 @@
 <script setup lang="ts">
 import { computed, defineProps, withDefaults } from 'vue';
 import { getDefault } from '../../utils/defaults';
-import { MonthPage, useCommons } from '../../composables/useCommons';
-import {
-  definePopoverEvents,
-  PopoverPosition,
-  PopoverVisibility,
-} from '../../composables/usePopover';
+import { useCommons } from '../../composables/useCommons';
+import { definePopoverEvents } from '../../composables/usePopover';
+import type { CalendarPanelOptions } from '#/options';
 import CalendarPanelWeeks from './CalendarPanelWeeks.vue';
 import CalendarDay from '../CalendarDay/CalendarDay.vue';
-
-export type WeeknumbersVisibility =
-  | 'left'
-  | 'left-outside'
-  | 'right'
-  | 'right-outside';
-
-export interface CalendarPanelOptions {
-  page: MonthPage;
-  position: number;
-  titlePosition: PopoverPosition;
-  navVisibility?: PopoverVisibility;
-
-  row: number;
-  rowFromEnd: number;
-  column: number;
-  columnFromEnd: number;
-
-  showWeeknumbers: boolean | WeeknumbersVisibility;
-  showIsoWeeknumbers: boolean | WeeknumbersVisibility;
-}
 
 const props = withDefaults(defineProps<CalendarPanelOptions>(), {
   navVisibility: () => getDefault('navVisibility'),

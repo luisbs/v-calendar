@@ -1,33 +1,8 @@
 <script setup lang="ts">
 import { defineEmits, defineProps, nextTick, ref, watch } from 'vue';
-import { PanelItem } from '../../composables/usePanel';
+import type { PopoverPanelOptions } from '#/options';
 import PopoverButton from './PopoverButton.vue';
 import SvgIcon from '../SvgIcon/SvgIcon.vue';
-
-export interface PopoverPanelOptions {
-  /**
-   * Items to show on the panel
-   */
-  items: PanelItem[];
-  /**
-   * Enable the previous panel button
-   */
-  enablePrev?: boolean;
-  /**
-   * Enable the next panel button
-   */
-  enableNext?: boolean;
-  /**
-   * When is set to `true` the first item will be focused,
-   * then this component will set the prop back to `false`
-   *
-   * @example
-   * ```vue
-   * <PopoverPanel v-model:focusFirst="value" />
-   * ```
-   */
-  focusFirst?: boolean;
-}
 
 const emit = defineEmits([
   'input',

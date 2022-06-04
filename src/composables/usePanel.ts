@@ -1,17 +1,6 @@
 import { computed, Ref } from 'vue';
 import { useCommons } from './useCommons';
-
-export type PanelValue = Record<'year' | 'month', number>;
-export interface PanelItem {
-  id: string;
-  value: PanelValue;
-  label: string;
-  ariaLabel?: string;
-
-  isActive?: boolean;
-  isCurrent?: boolean;
-  isEnabled?: boolean;
-}
+import type { PanelItem, PanelValue } from '#/data';
 
 /**
  * Handle the active panel
