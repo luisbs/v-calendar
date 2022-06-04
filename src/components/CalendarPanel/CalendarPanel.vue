@@ -1,16 +1,20 @@
 <script setup lang="ts">
 import { computed, defineProps, withDefaults } from 'vue';
 import { getDefault } from '../../utils/defaults';
-import useCommons, { MonthPage } from '../../composables/useCommons';
+import { MonthPage, useCommons } from '../../composables/useCommons';
 import {
   definePopoverEvents,
   PopoverPosition,
   PopoverVisibility,
 } from '../../composables/usePopover';
-import CalendarPanelWeeks, {
-  WeeknumbersVisibility,
-} from './CalendarPanelWeeks.vue';
+import CalendarPanelWeeks from './CalendarPanelWeeks.vue';
 import CalendarDay from '../CalendarDay/CalendarDay.vue';
+
+export type WeeknumbersVisibility =
+  | 'left'
+  | 'left-outside'
+  | 'right'
+  | 'right-outside';
 
 export interface CalendarPanelOptions {
   page: MonthPage;
@@ -31,7 +35,25 @@ const props = withDefaults(defineProps<CalendarPanelOptions>(), {
   navVisibility: () => getDefault('navVisibility'),
 });
 
-const { navPopoverId } = useCommons();
+// serialize the `show-weeknumbers` props
+const options = computed(() => {
+  let side = false as false | 'left' | 'right';
+  let outside = false;
+
+  const showNumbers = props.showWeeknumbers ?? props.showIsoWeeknumbers;
+  if (typeof showNumbers !== 'string') {
+    side = showNumbers ? 'left' : false;
+  } else {
+    side = showNumbers.startsWith('right') ? 'right' : 'left';
+    if (showNumbers.endsWith('outside')) {
+      outside =
+        (side === 'left' && props.column === 1) ||
+        (side === 'right' && props.columnFromEnd === 1);
+    }
+  }
+
+  return { side, outside, iso: Boolean(props.showWeeknumbers) };
+});
 
 // calculate the position for the popover
 const navPlacement = computed(() => {
@@ -41,6 +63,7 @@ const navPlacement = computed(() => {
 });
 
 // keep the events in sync
+const { navPopoverId } = useCommons();
 const navEvents = computed(() => {
   const { page, position } = props;
   return definePopoverEvents({
@@ -50,7 +73,7 @@ const navEvents = computed(() => {
     placement: navPlacement.value,
     visibility: props.navVisibility,
     modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom'] } }],
-    // isInteractive: true, // ?
+    isInteractive: true,
   });
 });
 </script>
@@ -75,7 +98,7 @@ const navEvents = computed(() => {
     </slot>
 
     <!-- Panel Content -->
-    <CalendarPanelWeeks :days="props.page.days" v-bind="props">
+    <CalendarPanelWeeks :days="props.page.days" :weeknumbers="options">
       <template #week-day="day">
         <CalendarDay :day="day" v-bind="$attrs">
           <!-- pass slot -->

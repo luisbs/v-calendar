@@ -1,22 +1,24 @@
 <script setup lang="ts">
 import { computed, defineEmits, defineProps, h } from 'vue';
-import useCommons, { Day } from '../../composables/useCommons';
+import { Day, useCommons } from '../../composables/useCommons';
 import { hFor, hIf, useSlots } from '../../composables/useVue';
 
-export type WeeknumbersVisibility =
-  | 'left'
-  | 'left-outside'
-  | 'right'
-  | 'right-outside';
+export interface WeeknumbersOptions {
+  /** Defines if the weeknumbers should be showned */
+  side: false | 'left' | 'right';
+  /** Defines if the weeknumbers should be showned outside */
+  outside: boolean;
+  /** Defines if the ISO weeknumbers should be used */
+  iso: boolean;
+}
 
-export interface CalendarPageOptions {
+export interface CalendarPanelWeeksOptions {
   days: Day[];
-  showWeeknumbers?: boolean | WeeknumbersVisibility;
-  showIsoWeeknumbers?: boolean | WeeknumbersVisibility;
+  weeknumbers: WeeknumbersOptions;
 }
 
 defineEmits(['weeknumberclick']);
-const props = defineProps<CalendarPageOptions>();
+defineProps<CalendarPanelWeeksOptions>();
 const { callSlot } = useSlots();
 
 // get the weekday labels based on locale
@@ -26,41 +28,21 @@ const weekdayLabels = computed(() => {
     .getWeekdayDates()
     .map(date => locale.format(date, masks.weekdays));
 });
-
-// serialize the `show-weeknumbers` props
-const showOptions = computed(() => {
-  const showNumbers = props.showWeeknumbers ?? props.showIsoWeeknumbers;
-  const opts = { show: false, left: true, inside: true };
-
-  if (typeof showNumbers !== 'string') {
-    return showNumbers === true ? { ...opts, show: true } : opts;
-  }
-
-  if (showNumbers.startsWith('right')) opts.left = false;
-  if (showNumbers.endsWith('outside')) opts.inside = false;
-
-  return opts;
-});
 </script>
 
 <script lang="ts">
 export default {
   render() {
     const daysInWeek = locale.daysInWeek;
-    const weeknumbersKey = this.showWeeknumbers
-      ? 'weeknumber'
-      : 'isoWeeknumber';
-
-    // make easier to use the `showWeeknumbers` prop
-    const opts = showOptions.value;
-    const showLeft = opts.show && opts.left;
-    const showRight = opts.show && !opts.left;
+    const weeknumbersKey = this.weeknumbers.iso
+      ? 'isoWeeknumber'
+      : 'weeknumber';
 
     // class applied to the week number cells
     const weeknumberCls =
       'is-' + //
-      (opts.left ? 'left' : 'right') +
-      (opts.inside ? '' : '-outside');
+      (this.weeknumbers.side ?? 'left') +
+      (this.weeknumbers.outside ? '-outside' : '');
 
     // render week number cell
     const renderWeeknumberCell = (weeknumber: number) => {
@@ -79,9 +61,13 @@ export default {
       );
     };
 
+    // make easier to use the `showWeeknumbers` prop
+    const showLeft = this.weeknumbers.side === 'left';
+    const showRight = this.weeknumbers.side === 'right';
+
     // class applied to the weeks container
-    const weekCls = opts.show
-      ? ['vc-weeks', 'vc-show-weeknumbers', opts.left ? 'is-left' : 'is-right']
+    const weekCls = this.weeknumbers.side //
+      ? ['vc-weeks', 'vc-show-weeknumbers', `is-${this.weeknumbers.side}`]
       : ['vc-weeks'];
 
     // rendered content

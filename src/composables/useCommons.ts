@@ -95,7 +95,7 @@ export interface SharedState {
   dayPopoverId: string;
 }
 
-export default function useCommons() {
+export function useCommons() {
   const state = inject('sharedState') as SharedState;
 
   const pageFromDate = (date: Date) => {

@@ -33,6 +33,9 @@ export interface PopoverEventsOptions {
   autoHide?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   modifiers: Array<{ name: string; options: any }>;
+
+  /** TODO: no se para que funciona esto */
+  isInteractive?: boolean;
 }
 
 export function definePopoverEvents(opts: PopoverEventsOptions) {
