@@ -2,7 +2,6 @@
 import { h } from 'vue';
 import { createPopper } from '@popperjs/core';
 import { on, off, elementContains } from '../../utils/helpers';
-import { isFunction, omit } from '../../utils/_';
 import CustomTransition from '../CustomTransition/CustomTransition.vue';
 
 export default {
@@ -89,7 +88,7 @@ export default {
   computed: {
     content() {
       return (
-        (isFunction(this.$slots.default) &&
+        (typeof this.$slots.default === 'function' &&
           this.$slots.default({
             direction: this.direction,
             alignment: this.alignment,
@@ -255,6 +254,7 @@ export default {
       this.update(detail);
     },
     show(opts = {}) {
+      const { id, ..._opts } = opts;
       opts.action = 'show';
       const ref = opts.ref || this.ref;
       const delay = opts.showDelay >= 0 ? opts.showDelay : this.showDelay;
@@ -271,7 +271,7 @@ export default {
       clearTimeout(this.timeout);
       this.opts = opts;
       const fn = () => {
-        Object.assign(this, omit(opts, ['id']));
+        Object.assign(this, _opts);
         this.setupPopper();
         this.opts = null;
       };
@@ -316,8 +316,8 @@ export default {
         this.show(opts);
       }
     },
-    update(opts = {}) {
-      Object.assign(this, omit(opts, ['id']));
+    update({ id, ...opts } = {}) {
+      Object.assign(this, opts);
       this.setupPopper();
     },
     setupPopper() {
