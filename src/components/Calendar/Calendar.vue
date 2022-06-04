@@ -53,31 +53,35 @@ export default {
       const rowFromEnd = this.rows - row + 1;
       const column = position % this.columns || this.columns;
       const columnFromEnd = this.columns - column + 1;
-      return h(
-        CalendarPane,
-        {
-          ...this.$attrs,
-          key: page.key,
-          attributes: this.store,
-          page,
-          position,
-          row,
-          rowFromEnd,
-          column,
-          columnFromEnd,
-          titlePosition: this.titlePosition,
-          canMove: this.canMove,
-          'onUpdate:page': e => this.move(e, { position: i + 1 }),
-          onDayfocusin: e => {
-            this.lastFocusedDay = e;
-            this.$emit('dayfocusin', e);
-          },
-          onDayfocusout: e => {
-            this.lastFocusedDay = null;
-            this.$emit('dayfocusout', e);
-          },
+
+      const attrs = {
+        ...this.$attrs,
+        key: page.key,
+        attributes: this.store,
+        page,
+        position,
+        row,
+        rowFromEnd,
+        column,
+        columnFromEnd,
+        titlePosition: this.titlePosition,
+        canMove: this.canMove,
+        'onUpdate:page': e => this.move(e, { position: i + 1 }),
+        onDayfocusin: e => {
+          this.lastFocusedDay = e;
+          this.$emit('dayfocusin', e);
         },
-        this.$slots,
+        onDayfocusout: e => {
+          this.lastFocusedDay = null;
+          this.$emit('dayfocusout', e);
+        },
+      };
+
+      return (
+        // user calendar panel
+        this.safeSlot('calendar-panel', attrs) ||
+        // default calendar panel
+        h(CalendarPane, attrs, this.$slots)
       );
     });
 
@@ -124,7 +128,7 @@ export default {
             const { position, page } = data;
             return (
               // allow custom popover from user
-              this.safeSlot('nav-popover', {
+              this.safeSlot('calendar-popover', {
                 page,
                 position,
                 validator: e => this.canMove(e, { position }),
