@@ -1,5 +1,5 @@
 import { elementContains } from '../utils/helpers';
-import { PopoverPosition, PopoverVisibility } from '#/options';
+import { PopoverPosition, PopoverVisibility } from '~/options';
 
 function dispatchEvent(name: string, options: CustomEventInit) {
   document?.dispatchEvent(new CustomEvent(name, options));

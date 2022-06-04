@@ -6,8 +6,13 @@ import {
   useYearsFilter,
 } from '../../composables/usePanel';
 import { useRef, useSlots } from '../../composables/useVue';
-import type { InputPanelOptions, PanelValue } from '#/options';
 import PopoverPanel from './PopoverPanel.vue';
+import type { PanelValue } from '~/options';
+
+export interface InputPanelOptions {
+  modelValue: PanelValue;
+  validator?: (value: PanelValue) => boolean;
+}
 
 const { createSlot } = useSlots();
 const emit = defineEmits(['update:modelValue']);

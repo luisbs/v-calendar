@@ -1,6 +1,6 @@
 import { Day, MonthPage, PanelValue } from './data';
 
-export { PanelValue };
+export { MonthPage, PanelValue };
 
 export type PopoverVisibility = 'click' | 'hover' | 'hover-focus' | 'focus';
 
@@ -27,6 +27,7 @@ export type WeeknumbersVisibility =
   | 'right'
   | 'right-outside';
 
+// * Used on: `src/components/CalendarPanel/CalendarPanel.vue`
 export interface CalendarPanelOptions {
   page: MonthPage;
   position: number;
@@ -42,20 +43,7 @@ export interface CalendarPanelOptions {
   showIsoWeeknumbers: boolean | WeeknumbersVisibility;
 }
 
-export interface WeeknumbersOptions {
-  /** Defines if the weeknumbers should be showned */
-  side: false | 'left' | 'right';
-  /** Defines if the weeknumbers should be showned outside */
-  outside: boolean;
-  /** Defines if the ISO weeknumbers should be used */
-  iso: boolean;
-}
-
-export interface CalendarPanelWeeksOptions {
-  days: Day[];
-  weeknumbers: WeeknumbersOptions;
-}
-
+// * Used on: `src/components/PopoverPanels/PopoverPanel.vue`
 export interface PopoverPanelOptions {
   /**
    * Items to show on the panel
@@ -81,6 +69,9 @@ export interface PopoverPanelOptions {
   focusFirst?: boolean;
 }
 
+// * Used on: `src/components/PopoverPanels/MonthPanel.vue`
+// * Used on: `src/components/PopoverPanels/MonthYearPanel.vue`
+// * Used on: `src/components/PopoverPanels/YearPanel.vue`
 export interface InputPanelOptions {
   modelValue: PanelValue;
   validator?: (value: PanelValue) => boolean;

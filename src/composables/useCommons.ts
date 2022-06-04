@@ -1,5 +1,5 @@
 import { inject } from 'vue';
-import type { SharedState } from '#/data';
+import type { SharedState } from '~/data';
 
 export function useCommons() {
   const state = inject('sharedState') as SharedState;

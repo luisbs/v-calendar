@@ -3,7 +3,19 @@ import { computed, defineEmits, defineProps, h } from 'vue';
 import { useCommons } from '../../composables/useCommons';
 import { hFor, hIf, useSlots } from '../../composables/useVue';
 
-import type { CalendarPanelWeeksOptions } from '#/options';
+import type { Day } from '~/data';
+
+export interface CalendarPanelWeeksOptions {
+  days: Day[];
+  weeknumbers: {
+    /** Defines if the weeknumbers should be showned */
+    side: false | 'left' | 'right';
+    /** Defines if the weeknumbers should be showned outside */
+    outside: boolean;
+    /** Defines if the ISO weeknumbers should be used */
+    iso: boolean;
+  };
+}
 
 defineEmits(['weeknumberclick']);
 defineProps<CalendarPanelWeeksOptions>();

@@ -1,6 +1,6 @@
 import { computed, Ref } from 'vue';
 import { useCommons } from './useCommons';
-import type { PanelItem, PanelValue } from '#/data';
+import type { PanelItem, PanelValue } from '~/data';
 
 /**
  * Handle the active panel
