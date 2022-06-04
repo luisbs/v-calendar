@@ -1,5 +1,5 @@
 import { computed, Ref } from 'vue';
-import useCommons from './useCommons';
+import { useCommons } from './useCommons';
 
 export type PanelValue = Record<'year' | 'month', number>;
 export interface PanelItem {
