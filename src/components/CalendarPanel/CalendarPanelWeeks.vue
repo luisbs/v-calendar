@@ -21,8 +21,10 @@ defineEmits(['weeknumberclick']);
 defineProps<CalendarPanelWeeksOptions>();
 const { callSlot } = useSlots();
 
-// get the weekday labels based on locale
 const { locale, masks } = useCommons();
+const daysInWeek = computed(() => locale.daysInWeek);
+
+// get the weekday labels based on locale
 const weekdayLabels = computed(() => {
   return locale
     .getWeekdayDates()
@@ -33,7 +35,6 @@ const weekdayLabels = computed(() => {
 <script lang="ts">
 export default {
   render() {
-    const daysInWeek = locale.daysInWeek;
     const weeknumbersKey = this.weeknumbers.iso
       ? 'isoWeeknumber'
       : 'weeknumber';
@@ -81,7 +82,7 @@ export default {
 
       // CalendarPage Days
       ...hFor(this.days, (day, i) => {
-        const mod = i % daysInWeek;
+        const mod = i % daysInWeek.value;
         return [
           // weeknumber cell on left side
           showLeft && mod === 0
@@ -92,7 +93,7 @@ export default {
           callSlot('week-day', day, day.label),
 
           // weeknumber cell on right side
-          showRight && mod === daysInWeek - 1
+          showRight && mod === daysInWeek.value - 1
             ? renderWeeknumberCell(day[weeknumbersKey])
             : undefined,
         ];
