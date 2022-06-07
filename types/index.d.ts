@@ -1,18 +1,29 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { Plugin, DefineComponent } from 'vue';
+import {
+  CalendarPanelOptions,
+  InputPanelOptions,
+  PopoverPanelOptions,
+} from './options';
 
 declare const VCalendarLibrary: Exclude<Plugin['install'], undefined>;
 export default VCalendarLibrary;
 
-export const Calendar: Exclude<Plugin['install'], undefined> | DefineComponent;
+export const Calendar: DefineComponent<any>;
 
-export const Popover: Exclude<Plugin['install'], undefined> | DefineComponent;
+export const Popover: DefineComponent<any>;
 
-export const PopoverRow:
-  | Exclude<Plugin['install'], undefined>
-  | DefineComponent;
+export const PopoverRow: DefineComponent<any>;
 
-export const DatePicker:
-  | Exclude<Plugin['install'], undefined>
-  | DefineComponent;
+export const DatePicker: DefineComponent<any>;
 
-export * from './components';
+export const CalendarPanel: DefineComponent<CalendarPanelOptions>;
+
+export const PopoverPanel: DefineComponent<PopoverPanelOptions>;
+
+export const MonthPanel: DefineComponent<InputPanelOptions>;
+
+export const MonthYearPanel: DefineComponent<InputPanelOptions>;
+
+export const YearPanel: DefineComponent<InputPanelOptions>;
