@@ -75,8 +75,40 @@ export interface MonthPage {
   shortMonthLabel: string;
 }
 
-export interface StateLocale {
+export interface LocaleMasks {
+  model: string; // ?     'iso'
+  iso: string; // ?       'YYYY-MM-DDTHH:mm:ss.SSSZ'
+  L: string; // ?         'MM/DD/YYYY'
+  title: string; // ?     'MMMM YYYY'
+  weekdays: string; // ?  'W'
+  navMonths: string; // ? 'MMM'
+  dayPopover: string; // ? 'WWW, MMM D, YYYY';
+
+  data: string[]; // ?              ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'];
+  input: string[]; // ?             ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'];
+  inputDateTime: string[]; // ?     ['L h:mm A', 'YYYY-MM-DD h:mm A', 'YYYY/MM/DD h:mm A'];
+  inputDateTime24hr: string[]; // ? ['L HH:mm', 'YYYY-MM-DD HH:mm', 'YYYY/MM/DD HH:mm'];
+  inputTime: string[]; // ?         ['h:mm A'];
+  inputTime24hr: string[]; // ?     ['HH:mm'];
+}
+
+export interface Locale {
+  id: 'en-US';
+
   daysInWeek: number;
+  firstDayOfWeek: number;
+  amPm: string[]; // ? ['am', 'pm'];
+
+  dayNames: string[]; // ?        ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  dayNamesShort: string[]; // ?   ['Sun',    'Mon',    'Tue',     'Wed',       'Thu',      'Fri',    'Sat'];
+  dayNamesShorter: string[]; // ? ['Su',     'Mo',     'Tu',      'We',        'Th',       'Fr',     'Sa'];
+  dayNamesNarrow: string[]; // ?  ['S',      'M',      'T',       'W',         'T',        'F',      'S'];
+
+  monthNames: string[]; // ?      ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  monthNamesShort: string[]; // ? ['Jan',     'Feb',      'Mar',   'Apr',   'May', 'Jun',  'Jul',  'Aug',    'Sep',       'Oct',     'Nov',      'Dec'];
+
+  masks: LocaleMasks;
+  monthData: Record<string, Month>;
 
   format: (date: Date, mask: string) => string;
   normalizeDate: (date: Date) => Date;
@@ -85,10 +117,21 @@ export interface StateLocale {
   getWeekdayDates: () => Date[];
 }
 
+export type ThemeStyle = Partial<Record<'fillMode', 'light' | 'solid'>>;
+
+export interface Theme {
+  color: string;
+  isDark: boolean;
+  content: Record<'base' | 'start' | 'end', ThemeStyle>;
+  highlight: Record<'base' | 'start' | 'end', ThemeStyle>;
+  dot: Record<'base' | 'start' | 'end', ThemeStyle>;
+  bar: Record<'base' | 'start' | 'end', ThemeStyle>;
+}
+
 export interface SharedState {
-  masks: Record<'weekdays' | 'navMonths', string>;
-  theme: string;
-  locale: StateLocale;
+  masks: LocaleMasks;
+  theme: Theme;
+  locale: Locale;
   navPopoverId: string;
   dayPopoverId: string;
 }
