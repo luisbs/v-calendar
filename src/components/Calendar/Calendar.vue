@@ -57,7 +57,8 @@ export default {
       const params = {
         ...this.$attrs,
         key: page.key,
-        attributes: this.store,
+        // TODO: is not really used on child components?
+        // attributes: this.store,
         page,
         position,
         row,

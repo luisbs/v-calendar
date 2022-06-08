@@ -1,5 +1,9 @@
+<script lang="ts">
+export default { inheritAttrs: false };
+</script>
+
 <script setup lang="ts">
-import { computed, defineProps, withDefaults } from 'vue';
+import { computed, defineProps, useAttrs, withDefaults } from 'vue';
 import { getDefault } from '../../utils/defaults';
 import { useCommons } from '../../composables/useCommons';
 import { definePopoverEvents } from '../../composables/usePopover';
