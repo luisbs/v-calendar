@@ -54,7 +54,7 @@ export default {
       const column = position % this.columns || this.columns;
       const columnFromEnd = this.columns - column + 1;
 
-      const attrs = {
+      const params = {
         ...this.$attrs,
         key: page.key,
         attributes: this.store,
@@ -79,9 +79,9 @@ export default {
 
       return (
         // user calendar panel
-        this.safeSlot('calendar-panel', attrs) ||
+        this.safeSlot('calendar-panel', params) ||
         // default calendar panel
-        h(CalendarPane, attrs, this.$slots)
+        h(CalendarPane, params, this.$slots)
       );
     });
 
