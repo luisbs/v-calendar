@@ -1,6 +1,15 @@
 import { inject } from 'vue';
 import type { SharedState } from '~/data';
 
+type SimpleMasks =
+  | 'model'
+  | 'iso'
+  | 'L'
+  | 'title'
+  | 'weekdays'
+  | 'navMonths'
+  | 'dayPopover';
+
 export function useCommons() {
   const state = inject('sharedState') as SharedState;
 
@@ -8,5 +17,9 @@ export function useCommons() {
     return state.locale.getDateParts(state.locale.normalizeDate(date));
   };
 
-  return { ...state, pageFromDate };
+  const format = (date: Date, mask: SimpleMasks) => {
+    return state.locale.format(date, state.masks[mask]);
+  };
+
+  return { ...state, format, pageFromDate };
 }

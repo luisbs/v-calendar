@@ -27,8 +27,8 @@ export type WeeknumbersVisibility =
   | 'right'
   | 'right-outside';
 
-// * Used on: `src/components/CalendarPanel/CalendarPanel.vue`
-export interface CalendarPanelOptions {
+// * Used on: `src/components/CalendarPage/CalendarPage.vue`
+export interface CalendarPageOptions {
   page: MonthPage;
   position: number;
   titlePosition: PopoverPosition;

@@ -2,7 +2,7 @@
 
 import { Plugin, DefineComponent } from 'vue';
 import {
-  CalendarPanelOptions,
+  CalendarPageOptions,
   InputPanelOptions,
   PopoverPanelOptions,
 } from './options';
@@ -18,7 +18,7 @@ export const PopoverRow: DefineComponent<any>;
 
 export const DatePicker: DefineComponent<any>;
 
-export const CalendarPanel: DefineComponent<CalendarPanelOptions>;
+export const CalendarPage: DefineComponent<CalendarPageOptions>;
 
 export const PopoverPanel: DefineComponent<PopoverPanelOptions>;
 

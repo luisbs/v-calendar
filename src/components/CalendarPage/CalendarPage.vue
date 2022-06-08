@@ -1,16 +1,14 @@
-<script lang="ts">
-export default { inheritAttrs: false };
-</script>
-
 <script setup lang="ts">
-import { computed, defineProps, useAttrs, withDefaults } from 'vue';
+import { computed, defineComponent, h } from 'vue';
 import { getDefault } from '../../utils/defaults';
 import { useCommons } from '../../composables/useCommons';
 import { definePopoverEvents } from '../../composables/usePopover';
+import { useSlots } from '../../composables/useVue';
 
-import CalendarPanelWeeks from './CalendarPanelWeeks.vue';
 import CalendarDay from '../CalendarDay/CalendarDay.vue';
+import CalendarPageWeeks from './CalendarPageWeeks.vue';
 
+import type { Day } from '~/data';
 import type {
   MonthPage,
   PopoverPosition,
@@ -18,7 +16,7 @@ import type {
   WeeknumbersVisibility,
 } from '~/options';
 
-interface CalendarPanelOptions {
+interface CalendarPage {
   page: MonthPage;
   position: number;
   titlePosition: PopoverPosition;
@@ -33,9 +31,12 @@ interface CalendarPanelOptions {
   showIsoWeeknumbers: boolean | WeeknumbersVisibility;
 }
 
-const props = withDefaults(defineProps<CalendarPanelOptions>(), {
+const props = withDefaults(defineProps<CalendarPage>(), {
   navVisibility: () => getDefault('navVisibility'),
 });
+
+const { callSlot } = useSlots();
+const { navPopoverId } = useCommons();
 
 // serialize the `show-weeknumbers` props
 const options = computed(() => {
@@ -65,7 +66,6 @@ const navPlacement = computed(() => {
 });
 
 // keep the events in sync
-const { navPopoverId } = useCommons();
 const navEvents = computed(() => {
   const { page, position } = props;
   return definePopoverEvents({
@@ -78,37 +78,46 @@ const navEvents = computed(() => {
     isInteractive: true,
   });
 });
+
+defineExpose({ callSlot, navEvents, options });
 </script>
 
-<template>
-  <div
-    :class="[
-      'vc-pane',
-      `row-from-end-${props.rowFromEnd}`,
-      `column-from-end-${props.columnFromEnd}`,
-    ]"
-  >
-    <!-- Panel Header -->
-    <slot name="header" :page="props.page">
-      <div :class="['vc-header', `align-${props.titlePosition}`]">
-        <div class="vc-title" v-on="navEvents">
-          <slot name="header-title" :page="props.page">
-            {{ props.page.title }}
-          </slot>
-        </div>
-      </div>
-    </slot>
+<script lang="ts">
+export default {
+  inheritAttrs: false,
+  render() {
+    // * CalendarPage Header Title
+    const title = h(
+      'div',
+      { class: 'vc-title', on: this.navEvents },
+      callSlot('header-title', this.page, this.page.title),
+    );
 
-    <!-- Panel Content -->
-    <CalendarPanelWeeks :days="props.page.days" :weeknumbers="options">
-      <template #week-day="day">
-        <CalendarDay :day="day" v-bind="$attrs">
-          <!-- pass slot -->
-          <template #day-content>
-            <slot name="day-content" :day="day" />
-          </template>
-        </CalendarDay>
-      </template>
-    </CalendarPanelWeeks>
-  </div>
-</template>
+    // * CalendarPage Header
+    const header =
+      callSlot('header', { page: this.page }) ||
+      // Default CalendarPage Header
+      h('div', { class: ['vc-header', `align-${props.titlePosition}`] }, title);
+
+    // * CalendarPage Content (Weeks)
+    const content = h(
+      CalendarPageWeeks,
+      { days: this.page.days, weeknumbers: this.options },
+      ((day: Day) => h(CalendarDay, { day }, this.$slots)) as never,
+    );
+
+    // * CalendarPage
+    return h(
+      'div',
+      {
+        class: [
+          'vc-pane',
+          `row-from-end-${this.rowFromEnd}`,
+          `column-from-end-${this.columnFromEnd}`,
+        ],
+      },
+      [header, content],
+    );
+  },
+};
+</script>
