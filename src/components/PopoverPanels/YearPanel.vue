@@ -54,7 +54,7 @@ defineExpose({
   hasPrevPanel,
   hasNextPanel,
   focusFirstItem,
-  events: { input: handleInput, changePanel, focused: focusFirst },
+  events: { input: handleInput, focused: focusFirst, panelchange: changePanel },
 });
 </script>
 

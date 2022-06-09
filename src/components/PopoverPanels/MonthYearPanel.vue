@@ -69,11 +69,11 @@ defineExpose({
   hasPrevPanel,
   hasNextPanel,
   focusFirstItem,
-  events: {
+  popoverEvents: {
     input: handleInput,
-    changePanel,
-    clickTitle: toggleMode,
     focused: focusFirst,
+    panelchange: changePanel,
+    titleclick: toggleMode,
   },
 });
 </script>
@@ -100,7 +100,6 @@ export default {
           { items: this.activeItems, year: this.yearIndex },
           () => {
             if (this.monthMode) return this.yearIndex;
-
             const sorted = this.activeItems
               .map(item => item.value.year)
               .sort((a, b) => a - b);

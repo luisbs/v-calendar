@@ -16,7 +16,7 @@ export interface PopoverPanelOptions {
 }
 
 const props = defineProps<PopoverPanelOptions>();
-const emit = defineEmits(['input', 'changePanel', 'clickTitle', 'focused']);
+const emit = defineEmits(['input', 'focused', 'panelchange', 'titleclick']);
 
 const navContainer = ref<HTMLDivElement | null>(null);
 
@@ -39,7 +39,7 @@ const changePanel = (count: number) => {
   if (count === 0) return;
   if (count < 0 && !props.enablePrev) return;
   if (count > 0 && !props.enableNext) return;
-  emit('changePanel', count);
+  emit('panelchange', count);
 };
 </script>
 
@@ -63,7 +63,7 @@ const changePanel = (count: number) => {
       <PopoverButton
         class="vc-nav-title vc-grid-focus"
         style="white-space: 'nowrap'"
-        @push="ev => emit('clickTitle', ev)"
+        @push="ev => emit('titleclick', ev)"
       >
         <slot name="nav-title" />
       </PopoverButton>
