@@ -23,9 +23,9 @@ const year = computed(() => props.modelValue.year || 0);
 const month = computed(() => props.modelValue.month || 0);
 
 // control the active panel
-const [focused, focusFirst] = useRef(false);
 const [monthMode, toggleMode] = useRef(true, (_, o) => !o);
 const [yearIndex, changePanel] = useRef(year.value, (n, o) => o + n);
+const [focusFirstItem, focusFirst] = useRef(false, n => n ?? false);
 
 // react to parent updates
 onMounted(() => focusFirst(true));
@@ -60,6 +60,21 @@ const handleInput = (value: PanelValue) => {
     emit('update:modelValue', value);
   }
 };
+
+defineExpose({
+  yearIndex,
+  monthMode,
+  activeItems,
+  hasPrevPanel,
+  hasNextPanel,
+  focusFirstItem,
+  events: {
+    input: handleInput,
+    changePanel,
+    clickTitle: toggleMode,
+    focused: focusFirst,
+  },
+});
 </script>
 
 <script lang="ts">
@@ -71,28 +86,21 @@ export default {
     return h(
       PopoverPanel,
       {
-        items: activeItems.value,
-        focusFirst: focused.value,
-        enablePrev: hasPrevPanel.value,
-        enableNext: hasNextPanel.value,
-        on: {
-          input: handleInput,
-          changePanel: changePanel,
-          clickTitle: toggleMode,
-          'update:focusFirst': focusFirst,
-        },
+        items: this.activeItems,
+        enablePrev: this.hasPrevPanel,
+        enableNext: this.hasNextPanel,
+        focusFirstItem: this.focusFirstItem,
+        on: this.events,
       },
       {
         ...this.$slots,
         'nav-title': createSlot(
-          'year-panel-title',
-          { year: yearIndex.value, items: activeItems.value },
+          'panel-title',
+          { items: this.activeItems, year: this.yearIndex },
           () => {
-            if (monthMode.value) {
-              return yearIndex.value;
-            }
+            if (this.monthMode) return this.yearIndex;
 
-            const sorted = activeItems.value
+            const sorted = this.activeItems
               .map(item => item.value.year)
               .sort((a, b) => a - b);
             return `${sorted.at(0)} - ${sorted.at(-1)}`;

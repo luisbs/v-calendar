@@ -5,51 +5,32 @@ import SvgIcon from '../SvgIcon/SvgIcon.vue';
 import type { PanelItem } from '~/data';
 
 export interface PopoverPanelOptions {
-  /**
-   * Items to show on the panel
-   */
+  /** Items to show on the panel */
   items: PanelItem[];
-  /**
-   * Enable the previous panel button
-   */
+  /** Enable the previous panel button */
   enablePrev?: boolean;
-  /**
-   * Enable the next panel button
-   */
+  /** Enable the next panel button */
   enableNext?: boolean;
-  /**
-   * When is set to `true` the first item will be focused,
-   * then this component will set the prop back to `false`
-   *
-   * @example
-   * ```vue
-   * <PopoverPanel v-model:focusFirst="value" />
-   * ```
-   */
-  focusFirst?: boolean;
+  /** When is set to `true` the first item will be focused */
+  focusFirstItem?: boolean;
 }
 
-const emit = defineEmits([
-  'input',
-  'changePanel',
-  'clickTitle',
-  'update:focusFirst',
-]);
 const props = defineProps<PopoverPanelOptions>();
+const emit = defineEmits(['input', 'changePanel', 'clickTitle', 'focused']);
 
 const navContainer = ref<HTMLDivElement | null>(null);
 
 // when `focusFirst` is set to `true`
-// focus the first item and reset to `false`
+// focus the first item and emit a `focused` event
 watch(props, async n => {
-  if (n.focusFirst !== true) return;
+  if (n.focusFirstItem !== true) return;
 
   await nextTick();
-  const el = navContainer.value //
-    ?.querySelector<HTMLElement>('.vc-nav-item:not(.is-disabled)');
-  el?.focus?.();
+  navContainer.value //
+    ?.querySelector<HTMLElement>('.vc-nav-item:not(.is-disabled)')
+    ?.focus?.();
 
-  emit('update:focusFirst', false);
+  emit('focused');
 });
 
 // bubbles the click on prev\next buttons to the parent

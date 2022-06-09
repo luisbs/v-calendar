@@ -44,10 +44,13 @@ export function useSlots() {
     return hasSlot(name) ? slots[name]?.(args) : fallback;
   };
 
-  const createSlot = (name: string, args?: any, fallback?: any) => {
-    if (hasSlot(name)) {
-      return () => slots[name]?.(args);
-    }
+  const createSlot = (
+    name: string,
+    args?: any,
+    fallback?: any,
+  ): (() => any) => {
+    if (hasSlot(name)) return () => slots[name]?.(args);
+    if (typeof fallback === 'function') return fallback;
     return () => fallback;
   };
 

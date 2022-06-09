@@ -19,8 +19,8 @@ const year = computed(() => props.modelValue.year || 0);
 const month = computed(() => props.modelValue.month || 0);
 
 // handle year of the active panel
-const [focused, focusFirst] = useRef(false);
 const [yearIndex, changePanel] = useRef(year.value, (n, o) => o + n);
+const [focusFirstItem, focusFirst] = useRef(false, n => n ?? false);
 
 // react to parent updates
 onMounted(() => focusFirst(true));
@@ -40,12 +40,21 @@ const {
 } = useActivePanel(yearIndex, getMonthItems);
 
 // handle when a month is selected
-const handleMonthInput = (value: PanelValue) => {
+const handleInput = (value: PanelValue) => {
   if (props.validator(value)) {
     emit('update:modelValue', value);
     focusFirst(true);
   }
 };
+
+defineExpose({
+  yearIndex,
+  activeItems,
+  hasPrevPanel,
+  hasNextPanel,
+  focusFirstItem,
+  events: { input: handleInput, changePanel, focused: focusFirst },
+});
 </script>
 
 <script lang="ts">
@@ -57,22 +66,18 @@ export default {
     return h(
       PopoverPanel,
       {
-        items: activeItems.value,
-        focusFirst: focused.value,
-        enablePrev: hasPrevPanel.value,
-        enableNext: hasNextPanel.value,
-        on: {
-          input: handleMonthInput,
-          changePanel: changePanel,
-          'update:focusFirst': focusFirst,
-        },
+        items: this.activeItems,
+        enablePrev: this.hasPrevPanel,
+        enableNext: this.hasNextPanel,
+        focusFirstItem: this.focusFirstItem,
+        on: this.events,
       },
       {
         ...this.$slots,
         'nav-title': createSlot(
           'month-panel-title',
-          { year: yearIndex.value, items: activeItems.value },
-          yearIndex.value,
+          { items: this.activeItems, year: this.yearIndex },
+          this.yearIndex,
         ),
       },
     );
