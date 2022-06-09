@@ -17,7 +17,7 @@ export function definePopoverEvents(opts: PopoverEventsOptions) {
   let focused = false;
 
   return {
-    click(ev: MouseEvent) {
+    onClick(ev: MouseEvent) {
       if (useClick) {
         opts.ref = ev.target;
         dispatchEvent('toggle-popover', { detail: opts });
@@ -25,14 +25,14 @@ export function definePopoverEvents(opts: PopoverEventsOptions) {
       }
     },
 
-    mousemove(ev: MouseEvent) {
+    onMousemove(ev: MouseEvent) {
       if (useHover && !hovered) {
         hovered = true;
         opts.ref = ev.currentTarget;
         dispatchEvent('show-popover', { detail: opts });
       }
     },
-    mouseleave(ev: MouseEvent) {
+    onMouseleave(ev: MouseEvent) {
       if (useHover && hovered) {
         hovered = false;
         if (!useFocus || !focused) {
@@ -42,14 +42,14 @@ export function definePopoverEvents(opts: PopoverEventsOptions) {
       }
     },
 
-    focusin(ev: FocusEvent) {
+    onFocusin(ev: FocusEvent) {
       if (useFocus && !focused) {
         focused = true;
         opts.ref = ev.currentTarget;
         dispatchEvent('show-popover', { detail: opts });
       }
     },
-    focusout(ev: FocusEvent) {
+    onFocusout(ev: FocusEvent) {
       if (
         useFocus &&
         focused &&

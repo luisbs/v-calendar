@@ -7,6 +7,7 @@ import { useSlots } from '../../composables/useVue';
 import type { Day } from '~/data';
 import type {
   MonthPage,
+  PopoverEventsOptions,
   PopoverPosition,
   PopoverVisibility,
   WeeknumbersVisibility,
@@ -63,11 +64,10 @@ const navPlacement = computed(() => {
 
 // keep the events in sync
 const navEvents = computed(() => {
-  const { page, position } = props;
   return definePopoverEvents({
     id: navPopoverId.value,
     // TODO: puede haber mejor manera de pasar la informacion
-    data: { page, position },
+    data: { page: props.page, position: props.position },
     placement: navPlacement.value,
     visibility: props.navVisibility,
     modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom'] } }],
@@ -89,7 +89,7 @@ export default {
     // * CalendarPage Header Title
     const title = h(
       'div',
-      { class: 'vc-title', on: this.navEvents },
+      { class: 'vc-title', ...this.navEvents },
       this.callSlot('header-title', this.page, this.page.title),
     );
 

@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref, toRef, toRefs, watch } from 'vue';
-import { useCommons } from '../../composables/useCommons';
+import { serializeListeners, useCommons } from '../../composables/useCommons';
 import { serializeDayStyles } from '../../composables/useDayStyles';
 import { definePopoverEvents } from '../../composables/usePopover';
 import { useSlots } from '../../composables/useVue';
-import { mergeEvents } from '../../utils/helpers';
 import { updatePopover } from '../../utils/popovers';
 import type { Day } from '~/data';
 import type { PopoverEventsOptions } from '~/options';
@@ -46,14 +45,14 @@ const newEvent = (name: EventsEnum) => (ev: Event) => {
 };
 
 // events for the component
-const baseEvents = {
+const baseEvents = serializeListeners({
   click: newEvent('dayclick'),
   keydown: newEvent('daykeydown'),
   focusin: newEvent('dayfocusin'),
   focusout: newEvent('dayfocusout'),
   mouseenter: newEvent('daymouseenter'),
   mouseleave: newEvent('daymouseleave'),
-};
+});
 
 // refresh the component styles
 const refresh = () => {
@@ -79,7 +78,7 @@ const refreshEvents = () => {
   ) as PopoverEventsOptions;
 
   const popoverEvents = definePopoverEvents(popoverParams);
-  dayEvents.value = mergeEvents(baseEvents, popoverEvents);
+  dayEvents.value = serializeListeners(baseEvents, popoverEvents);
 
   updatePopover({ id: dayPopoverId.value, data: props.day });
 };
@@ -172,10 +171,10 @@ export default {
 
       const params = {
         ...dayContentProps,
+        ref: this.dayContent,
         class: dayContentClass,
         style: dayContent?.style,
-        on: this.dayEvents,
-        ref: this.dayContent,
+        ...this.dayEvents,
       } as never;
 
       layers.push(h('span', params, this.day.label));

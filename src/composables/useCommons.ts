@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { inject, toRef } from 'vue';
 import type { SharedState } from '~/data';
 
@@ -31,4 +32,23 @@ export function useCommons() {
     format,
     pageFromDate,
   };
+}
+
+export function serializeListeners(...sources: any[]) {
+  return sources.reduce((result, source) => {
+    for (const [k, cb] of Object.entries(source)) {
+      // serialize the listener name
+      const key = k.startsWith('on')
+        ? k
+        : 'on' + (k.at(0)?.toUpperCase() || '') + k.substring(1);
+
+      // ensure the listener is an array
+      if (!Array.isArray(result)) result[key] = [];
+
+      // append the listener
+      result[key].push(cb);
+    }
+
+    return result;
+  }, {}) as Record<string, EventListener[]>;
 }

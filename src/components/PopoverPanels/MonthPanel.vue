@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, watch } from 'vue';
+import { serializeListeners } from '../../composables/useCommons';
 import { useActivePanel, useMonthsFilter } from '../../composables/usePanel';
 import { useRef, useSlots } from '../../composables/useVue';
 import type { PanelValue } from '~/options';
@@ -47,6 +48,13 @@ const handleInput = (value: PanelValue) => {
   }
 };
 
+// events for user interaction
+const popoverEvents = serializeListeners({
+  input: handleInput,
+  focused: focusFirst,
+  panelchange: changePanel,
+});
+
 defineExpose({
   createSlot,
   yearIndex,
@@ -54,7 +62,7 @@ defineExpose({
   hasPrevPanel,
   hasNextPanel,
   focusFirstItem,
-  events: { input: handleInput, focused: focusFirst, panelchange: changePanel },
+  popoverEvents,
 });
 </script>
 
@@ -71,7 +79,7 @@ export default {
         enablePrev: this.hasPrevPanel,
         enableNext: this.hasNextPanel,
         focusFirstItem: this.focusFirstItem,
-        on: this.events,
+        ...this.popoverEvents,
       },
       {
         ...this.$slots,

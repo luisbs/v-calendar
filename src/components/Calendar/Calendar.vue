@@ -133,7 +133,7 @@ export default {
                 position,
                 modelValue: page,
                 validator: e => this.canMove(e, { position }),
-                on: { 'update:modelValue': e => this.move(e) },
+                'onUpdate:modelValue': e => this.move(e),
               }) ||
               // default nav popover
               h(
