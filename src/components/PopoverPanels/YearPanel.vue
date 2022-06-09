@@ -31,7 +31,7 @@ watch(props.modelValue, n => {
 });
 
 // filters
-const getYearItems = useYearsFilter(year, month, props.validator);
+const getYearItems = useYearsFilter(year, month, props.validator, 9, 4);
 
 // handle the active panel state
 const {

@@ -36,14 +36,15 @@ export function useYearsFilter(
   yearRef: Ref<number>,
   monthRef: Ref<number>,
   validator: (value: PanelValue) => boolean,
-  groupCount = 12,
+  count = 12,
+  offset = 0,
 ) {
   const { pageFromDate } = useCommons();
   return (year: number) => {
     const now = pageFromDate(new Date());
 
-    const first = year * groupCount;
-    const last = first + groupCount;
+    const first = year - offset;
+    const last = first + count;
 
     const items = [] as PanelItem[];
     for (let year = first; year < last; year++) {
