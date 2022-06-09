@@ -1,24 +1,8 @@
 import { elementContains } from '../utils/helpers';
-import { PopoverPosition, PopoverVisibility } from '~/options';
+import type { PopoverEventsOptions } from '~/options';
 
 function dispatchEvent(name: string, options: CustomEventInit) {
   document?.dispatchEvent(new CustomEvent(name, options));
-}
-
-export interface PopoverEventsOptions {
-  id: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: Record<string, any>;
-  placement: PopoverPosition;
-  visibility: PopoverVisibility;
-
-  ref?: EventTarget | null;
-  autoHide?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  modifiers: Array<{ name: string; options: any }>;
-
-  /** TODO: no se para que funciona esto */
-  isInteractive?: boolean;
 }
 
 export function definePopoverEvents(opts: PopoverEventsOptions) {

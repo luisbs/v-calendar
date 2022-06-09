@@ -36,12 +36,16 @@ export function hFor<T, R>(
 export function useSlots() {
   const slots = baseUseSlots();
 
+  const hasSlot = (name: string) => {
+    return typeof slots[name] === 'function';
+  };
+
   const callSlot = (name: string, args?: any, fallback?: any) => {
-    return typeof slots[name] === 'function' ? slots[name]?.(args) : fallback;
+    return hasSlot(name) ? slots[name]?.(args) : fallback;
   };
 
   const createSlot = (name: string, args?: any, fallback?: any) => {
-    if (typeof slots[name] === 'function') {
+    if (hasSlot(name)) {
       return () => slots[name]?.(args);
     }
     return () => fallback;
@@ -49,6 +53,7 @@ export function useSlots() {
 
   return {
     slots,
+    hasSlot,
     callSlot,
     createSlot,
   };
