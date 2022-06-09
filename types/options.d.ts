@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Day, MonthPage, PanelValue } from './data';
 
 export { MonthPage, PanelValue };
@@ -26,6 +27,21 @@ export type WeeknumbersVisibility =
   | 'left-outside'
   | 'right'
   | 'right-outside';
+
+// * Used on: `src/composables/usePopover.ts`
+export interface PopoverEventsOptions {
+  id: string;
+  data: any;
+  placement?: PopoverPosition;
+  visibility?: PopoverVisibility;
+
+  ref?: EventTarget | null;
+  autoHide?: boolean;
+  modifiers?: Array<{ name: string; options: any }>;
+
+  /** TODO: no se para que funciona esto */
+  isInteractive?: boolean;
+}
 
 // * Used on: `src/components/CalendarPage/CalendarPage.vue`
 export interface CalendarPageOptions {

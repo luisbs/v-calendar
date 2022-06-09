@@ -1,3 +1,110 @@
+import type { Ref } from 'vue';
+
+export interface PanelItem {
+  id: string;
+  value: PanelValue;
+  label: string;
+  ariaLabel?: string;
+
+  isActive?: boolean;
+  isCurrent?: boolean;
+  isEnabled?: boolean;
+}
+
+export type PanelValue = Record<'year' | 'month', number>;
+
+export interface SharedState {
+  navPopoverId: string;
+  dayPopoverId: string;
+
+  masks: LocaleMasks;
+  theme: Theme;
+  locale: Locale;
+}
+
+export interface Theme {
+  color: string;
+  isDark: boolean;
+  highlight: SelectionStyle;
+  content: SelectionStyle;
+  dot: SelectionStyle;
+  bar: SelectionStyle;
+}
+
+export interface Locale {
+  id: 'en-US';
+
+  daysInWeek: number;
+  firstDayOfWeek: number;
+  amPm: string[]; // ? ['am', 'pm'];
+
+  dayNames: string[]; // ?        ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  dayNamesShort: string[]; // ?   ['Sun',    'Mon',    'Tue',     'Wed',       'Thu',      'Fri',    'Sat'];
+  dayNamesShorter: string[]; // ? ['Su',     'Mo',     'Tu',      'We',        'Th',       'Fr',     'Sa'];
+  dayNamesNarrow: string[]; // ?  ['S',      'M',      'T',       'W',         'T',        'F',      'S'];
+
+  monthNames: string[]; // ?      ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  monthNamesShort: string[]; // ? ['Jan',     'Feb',      'Mar',   'Apr',   'May', 'Jun',  'Jul',  'Aug',    'Sep',       'Oct',     'Nov',      'Dec'];
+
+  masks: LocaleMasks;
+  monthData: Record<string, Month>;
+
+  format: (date: Date, mask: string) => string;
+  normalizeDate: (date: Date) => Date;
+  getDateParts: (date: Date) => MonthPage;
+  getMonthDates: () => Date[];
+  getWeekdayDates: () => Date[];
+}
+
+export interface LocaleMasks {
+  model: string; // ?     'iso'
+  iso: string; // ?       'YYYY-MM-DDTHH:mm:ss.SSSZ'
+  L: string; // ?         'MM/DD/YYYY'
+  title: string; // ?     'MMMM YYYY'
+  weekdays: string; // ?  'W'
+  navMonths: string; // ? 'MMM'
+  dayPopover: string; // ? 'WWW, MMM D, YYYY';
+
+  data: string[]; // ?              ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'];
+  input: string[]; // ?             ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'];
+  inputDateTime: string[]; // ?     ['L h:mm A', 'YYYY-MM-DD h:mm A', 'YYYY/MM/DD h:mm A'];
+  inputDateTime24hr: string[]; // ? ['L HH:mm', 'YYYY-MM-DD HH:mm', 'YYYY/MM/DD HH:mm'];
+  inputTime: string[]; // ?         ['h:mm A'];
+  inputTime24hr: string[]; // ?     ['HH:mm'];
+}
+
+export interface MonthPage {
+  key: string;
+  year: number;
+  month: number;
+  weeks: number;
+
+  days: Day[];
+  monthComps: Month;
+  prevMonthComps: Month;
+  nextMonthComps: Month;
+
+  title: string;
+  yearLabel: string;
+  monthLabel: string;
+  shortYearLabel: string;
+  shortMonthLabel: string;
+}
+
+export interface Month {
+  year: number;
+  month: number;
+  weeks: number;
+  days: number;
+
+  inLeapYear: boolean;
+  firstWeekday: number;
+  firstDayOfWeek: number;
+
+  weeknumbers: number[];
+  isoWeeknumbers: number[];
+}
+
 export interface Day {
   id: string;
   date: Date;
@@ -38,113 +145,40 @@ export interface Day {
 
   shouldRefresh: boolean;
 
-  attributes: unknown[];
-  attributesMap: Record<string, unknown>;
+  attributes: DayAttribute[];
+  attributesMap: Record<string, DayAttribute>;
   classes: Array<string | Record<string, boolean>>;
 }
 
-export interface Month {
-  year: number;
-  month: number;
-  weeks: number;
-  days: number;
-
-  inLeapYear: boolean;
-  firstWeekday: number;
-  firstDayOfWeek: number;
-
-  weeknumbers: number[];
-  isoWeeknumbers: number[];
-}
-
-export interface MonthPage {
+export interface DayAttribute {
   key: string;
-  year: number;
-  month: number;
-  weeks: number;
+  order: number;
 
-  days: Day[];
-  monthComps: Month;
-  prevMonthComps: Month;
-  nextMonthComps: Month;
+  popover?: Record<string, unknown>;
+  highlight?: SelectionStyle;
+  content?: SelectionStyle;
+  dot?: SelectionStyle;
+  bar?: SelectionStyle;
 
-  title: string;
-  yearLabel: string;
-  monthLabel: string;
-  shortYearLabel: string;
-  shortMonthLabel: string;
+  customData: unknown;
+  targetDate: DayAttributeTarget;
 }
 
-export interface LocaleMasks {
-  model: string; // ?     'iso'
-  iso: string; // ?       'YYYY-MM-DDTHH:mm:ss.SSSZ'
-  L: string; // ?         'MM/DD/YYYY'
-  title: string; // ?     'MMMM YYYY'
-  weekdays: string; // ?  'W'
-  navMonths: string; // ? 'MMM'
-  dayPopover: string; // ? 'WWW, MMM D, YYYY';
-
-  data: string[]; // ?              ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'];
-  input: string[]; // ?             ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'];
-  inputDateTime: string[]; // ?     ['L h:mm A', 'YYYY-MM-DD h:mm A', 'YYYY/MM/DD h:mm A'];
-  inputDateTime24hr: string[]; // ? ['L HH:mm', 'YYYY-MM-DD HH:mm', 'YYYY/MM/DD HH:mm'];
-  inputTime: string[]; // ?         ['h:mm A'];
-  inputTime24hr: string[]; // ?     ['HH:mm'];
+export interface DayAttributeTarget {
+  isDate: boolean;
+  isComplex: boolean;
+  startTime: Date;
+  endTime: Date;
 }
 
-export interface Locale {
-  id: 'en-US';
+export type SelectionStyle = Record<'base' | 'start' | 'end', OptionStyle>;
 
-  daysInWeek: number;
-  firstDayOfWeek: number;
-  amPm: string[]; // ? ['am', 'pm'];
+export interface OptionStyle {
+  class: string;
+  style: string;
 
-  dayNames: string[]; // ?        ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  dayNamesShort: string[]; // ?   ['Sun',    'Mon',    'Tue',     'Wed',       'Thu',      'Fri',    'Sat'];
-  dayNamesShorter: string[]; // ? ['Su',     'Mo',     'Tu',      'We',        'Th',       'Fr',     'Sa'];
-  dayNamesNarrow: string[]; // ?  ['S',      'M',      'T',       'W',         'T',        'F',      'S'];
+  contentClass: string;
+  contentStyle: string;
 
-  monthNames: string[]; // ?      ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  monthNamesShort: string[]; // ? ['Jan',     'Feb',      'Mar',   'Apr',   'May', 'Jun',  'Jul',  'Aug',    'Sep',       'Oct',     'Nov',      'Dec'];
-
-  masks: LocaleMasks;
-  monthData: Record<string, Month>;
-
-  format: (date: Date, mask: string) => string;
-  normalizeDate: (date: Date) => Date;
-  getDateParts: (date: Date) => MonthPage;
-  getMonthDates: () => Date[];
-  getWeekdayDates: () => Date[];
-}
-
-export type ThemeStyle = Partial<Record<'fillMode', 'light' | 'solid'>>;
-
-export interface Theme {
-  color: string;
-  isDark: boolean;
-  content: Record<'base' | 'start' | 'end', ThemeStyle>;
-  highlight: Record<'base' | 'start' | 'end', ThemeStyle>;
-  dot: Record<'base' | 'start' | 'end', ThemeStyle>;
-  bar: Record<'base' | 'start' | 'end', ThemeStyle>;
-}
-
-export interface SharedState {
-  masks: LocaleMasks;
-  theme: Theme;
-  locale: Locale;
-  navPopoverId: string;
-  dayPopoverId: string;
-}
-
-export type PanelValue = Record<'year' | 'month', number>;
-
-export interface PanelItem {
-  id: string;
-  value: PanelValue;
-  label: string;
-  ariaLabel?: string;
-
-  isActive?: boolean;
-  isCurrent?: boolean;
-  isEnabled?: boolean;
+  fillMode?: 'light' | 'solid';
 }
