@@ -25,8 +25,11 @@ const month = computed(() => props.modelValue.month || 0);
 
 // control the active panel
 const [monthMode, toggleMode] = useRef(true, (_, o) => !o);
-const [yearIndex, changePanel] = useRef(year.value, (n, o) => o + n);
 const [focusFirstItem, focusFirst] = useRef(false, n => n ?? false);
+const [yearIndex, changePanel] = useRef(year.value, (n, o) => {
+  // change on index depending on the mode
+  return o + (monthMode.value ? n : n * 12);
+});
 
 // react to parent updates
 onMounted(() => focusFirst(true));
@@ -50,7 +53,6 @@ const {
 
 // handle when a year/month is selected
 const handleInput = (value: PanelValue) => {
-  debugger;
   if (!monthMode.value) {
     yearIndex.value = value.year;
     toggleMode();
