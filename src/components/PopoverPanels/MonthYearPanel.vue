@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { computed, h, onMounted, watch } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import {
   useActivePanel,
   useMonthsFilter,
   useYearsFilter,
 } from '../../composables/usePanel';
 import { useRef, useSlots } from '../../composables/useVue';
-import PopoverPanel from './PopoverPanel.vue';
 import type { PanelValue } from '~/options';
 
 export interface InputPanelOptions {
@@ -64,6 +63,9 @@ const handleInput = (value: PanelValue) => {
 </script>
 
 <script lang="ts">
+import { h } from 'vue';
+import PopoverPanel from './PopoverPanel.vue';
+
 export default {
   render() {
     return h(
