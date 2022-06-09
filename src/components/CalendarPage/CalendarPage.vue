@@ -97,7 +97,7 @@ export default {
     const header =
       this.callSlot('header', { page: this.page }) ||
       // Default CalendarPage Header
-      h('div', { class: ['vc-header', `align-${props.titlePosition}`] }, title);
+      h('div', { class: ['vc-header', `align-${this.titlePosition}`] }, title);
 
     // * CalendarPage Content (Weeks)
     const content = h(
