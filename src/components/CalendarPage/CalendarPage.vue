@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import { computed, defineComponent, h } from 'vue';
+import { computed } from 'vue';
 import { getDefault } from '../../utils/defaults';
 import { useCommons } from '../../composables/useCommons';
 import { definePopoverEvents } from '../../composables/usePopover';
 import { useSlots } from '../../composables/useVue';
-
-import CalendarDay from '../CalendarDay/CalendarDay.vue';
-import CalendarPageWeeks from './CalendarPageWeeks.vue';
-
 import type { Day } from '~/data';
 import type {
   MonthPage,
@@ -69,7 +65,7 @@ const navPlacement = computed(() => {
 const navEvents = computed(() => {
   const { page, position } = props;
   return definePopoverEvents({
-    id: navPopoverId,
+    id: navPopoverId.value,
     // TODO: puede haber mejor manera de pasar la informacion
     data: { page, position },
     placement: navPlacement.value,
@@ -83,6 +79,10 @@ defineExpose({ callSlot, navEvents, options });
 </script>
 
 <script lang="ts">
+import { h } from 'vue';
+import CalendarPageDay from './CalendarPageDay.vue';
+import CalendarPageWeeks from './CalendarPageWeeks.vue';
+
 export default {
   inheritAttrs: false,
   render() {
@@ -103,7 +103,9 @@ export default {
     const content = h(
       CalendarPageWeeks,
       { days: this.page.days, weeknumbers: this.options },
-      ((day: Day) => h(CalendarDay, { day }, this.$slots)) as never,
+      ((day: Day) => {
+        return h(CalendarPageDay, { ...this.$attrs, day }, this.$slots);
+      }) as never,
     );
 
     // * CalendarPage

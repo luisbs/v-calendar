@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineComponent, h } from 'vue';
+import { computed } from 'vue';
 import { useWeekdays } from '../../composables/useDateFns';
 import { useSlots } from '../../composables/useVue';
 import type { Day } from '~/data';
@@ -39,14 +39,21 @@ defineExpose({ callSlot, onClick, daysInWeek, weekdayLabels, weeknumbersKey });
 </script>
 
 <script lang="ts">
+import { h } from 'vue';
+
 export default {
   inheritAttrs: false,
   render() {
     const showLeft = this.weeknumbers.side === 'left';
     const showRight = this.weeknumbers.side === 'right';
 
+    // class applied to the weeks container
+    const weekClass = this.weeknumbers.side //
+      ? ['vc-weeks', 'vc-show-weeknumbers', `is-${this.weeknumbers.side}`]
+      : ['vc-weeks'];
+
     // class applied to the week number cells
-    const weeknumberCls = [
+    const weeknumberClass = [
       'vc-weeknumber-content',
       'is-' + //
         (this.weeknumbers.side ?? 'left') +
@@ -56,10 +63,13 @@ export default {
     // * Render weeknumber cell
     const renderWeeknumberCell = (weeknumber: number) => {
       const onClick = (ev: MouseEvent) => this.onClick(ev, weeknumber);
-      return h('span', { class: weeknumberCls, onClick }, weeknumber);
+      return h('span', { class: weeknumberClass, onClick }, weeknumber);
     };
 
-    // weekdays to be added
+    //
+    // ---------------------------------------------------------------
+    //
+
     const content = [];
 
     // * CalendarPage Weekday Labels
@@ -87,13 +97,8 @@ export default {
       }
     }
 
-    // class applied to the weeks container
-    const weekCls = this.weeknumbers.side //
-      ? ['vc-weeks', 'vc-show-weeknumbers', `is-${this.weeknumbers.side}`]
-      : ['vc-weeks'];
-
     // * CalendarPage Weeks
-    return h('div', { class: weekCls }, content);
+    return h('div', { class: weekClass }, content);
   },
 };
 </script>
