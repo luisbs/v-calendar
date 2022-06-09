@@ -7,6 +7,7 @@ import type { PanelValue } from '~/options';
 
 export interface InputPanelOptions {
   modelValue: PanelValue;
+  groupCount?: number;
   validator?: (value: PanelValue) => boolean;
 }
 
@@ -14,14 +15,17 @@ const { createSlot } = useSlots();
 const emit = defineEmits(['update:modelValue']);
 const props = withDefaults(defineProps<InputPanelOptions>(), {
   validator: () => true,
+  groupCount: 9,
 });
 
 const year = computed(() => props.modelValue.year || 0);
 const month = computed(() => props.modelValue.month || 0);
 
 // handle year of the active panel
-const [yearIndex, changePanel] = useRef(year.value, (n, o) => o + n);
 const [focusFirstItem, focusFirst] = useRef(false, n => n ?? false);
+const [yearIndex, changePanel] = useRef(year.value, (n, o) => {
+  return o + n * props.groupCount;
+});
 
 // react to parent updates
 onMounted(() => focusFirst(true));
@@ -31,7 +35,13 @@ watch(props.modelValue, n => {
 });
 
 // filters
-const getYearItems = useYearsFilter(year, month, props.validator, 9, 4);
+const getYearItems = useYearsFilter(
+  year,
+  month,
+  props.validator,
+  props.groupCount,
+  4,
+);
 
 // handle the active panel state
 const {
