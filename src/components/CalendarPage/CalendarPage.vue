@@ -90,12 +90,12 @@ export default {
     const title = h(
       'div',
       { class: 'vc-title', on: this.navEvents },
-      callSlot('header-title', this.page, this.page.title),
+      this.callSlot('header-title', this.page, this.page.title),
     );
 
     // * CalendarPage Header
     const header =
-      callSlot('header', { page: this.page }) ||
+      this.callSlot('header', { page: this.page }) ||
       // Default CalendarPage Header
       h('div', { class: ['vc-header', `align-${props.titlePosition}`] }, title);
 
