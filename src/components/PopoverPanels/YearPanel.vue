@@ -48,6 +48,7 @@ const handleInput = (value: PanelValue) => {
 };
 
 defineExpose({
+  createSlot,
   yearIndex,
   activeItems,
   hasPrevPanel,
@@ -74,7 +75,7 @@ export default {
       },
       {
         ...this.$slots,
-        'nav-title': createSlot(
+        'nav-title': this.createSlot(
           'year-panel-title',
           { items: this.activeItems, year: this.yearIndex },
           () => {
