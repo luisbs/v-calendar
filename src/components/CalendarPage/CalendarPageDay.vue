@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref, toRef, toRefs, watch } from 'vue';
 import { serializeListeners, useCommons } from '../../composables/useCommons';
 import { serializeDayStyles } from '../../composables/useDayStyles';
-import { definePopoverEvents } from '../../composables/usePopover';
+import { serializePopoverEvents } from '../../composables/usePopover';
 import { useSlots } from '../../composables/useVue';
 import { updatePopover } from '../../utils/popovers';
 import type { Day } from '~/data';
@@ -77,7 +77,7 @@ const refreshEvents = () => {
     { id: dayPopoverId.value, data: props.day },
   ) as PopoverEventsOptions;
 
-  const popoverEvents = definePopoverEvents(popoverParams);
+  const popoverEvents = serializePopoverEvents(popoverParams);
   dayEvents.value = serializeListeners(baseEvents, popoverEvents);
 
   updatePopover({ id: dayPopoverId.value, data: props.day });

@@ -5,7 +5,7 @@ function dispatchEvent(name: string, options: CustomEventInit) {
   document?.dispatchEvent(new CustomEvent(name, options));
 }
 
-export function definePopoverEvents(opts: PopoverEventsOptions) {
+export function serializePopoverEvents(opts: PopoverEventsOptions) {
   const { visibility } = opts;
 
   const useClick = visibility === 'click';
@@ -13,13 +13,26 @@ export function definePopoverEvents(opts: PopoverEventsOptions) {
   const useFocus = visibility === 'focus' || visibility === 'hover-focus';
   opts.autoHide = !useClick;
 
+  let lastItem = '';
   let hovered = false;
   let focused = false;
+
+  const preparePopover = (target: EventTarget | null, forceUpdate = false) => {
+    const current = (target as HTMLElement)?.dataset.popover || '';
+    const sameItem = lastItem === current;
+    opts.data.popover = lastItem = current;
+    opts.ref = target;
+
+    if (forceUpdate && !sameItem) {
+      dispatchEvent('hide-popover', { detail: opts });
+      return;
+    }
+  };
 
   return {
     onClick(ev: MouseEvent) {
       if (useClick) {
-        opts.ref = ev.target;
+        preparePopover(ev.target, true);
         dispatchEvent('toggle-popover', { detail: opts });
         ev.stopPropagation();
       }
@@ -28,7 +41,7 @@ export function definePopoverEvents(opts: PopoverEventsOptions) {
     onMousemove(ev: MouseEvent) {
       if (useHover && !hovered) {
         hovered = true;
-        opts.ref = ev.currentTarget;
+        preparePopover(ev.currentTarget);
         dispatchEvent('show-popover', { detail: opts });
       }
     },
@@ -36,7 +49,7 @@ export function definePopoverEvents(opts: PopoverEventsOptions) {
       if (useHover && hovered) {
         hovered = false;
         if (!useFocus || !focused) {
-          opts.ref = ev.target;
+          preparePopover(ev.target);
           dispatchEvent('hide-popover', { detail: opts });
         }
       }
@@ -45,7 +58,7 @@ export function definePopoverEvents(opts: PopoverEventsOptions) {
     onFocusin(ev: FocusEvent) {
       if (useFocus && !focused) {
         focused = true;
-        opts.ref = ev.currentTarget;
+        preparePopover(ev.currentTarget);
         dispatchEvent('show-popover', { detail: opts });
       }
     },
@@ -60,7 +73,7 @@ export function definePopoverEvents(opts: PopoverEventsOptions) {
       ) {
         focused = false;
         if (!useHover || !hovered) {
-          opts.ref = ev.currentTarget;
+          preparePopover(ev.currentTarget);
           dispatchEvent('hide-popover', { detail: opts });
         }
       }

@@ -2,12 +2,11 @@
 import { computed } from 'vue';
 import { getDefault } from '../../utils/defaults';
 import { useCommons } from '../../composables/useCommons';
-import { definePopoverEvents } from '../../composables/usePopover';
+import { serializePopoverEvents } from '../../composables/usePopover';
 import { useSlots } from '../../composables/useVue';
 import type { Day } from '~/data';
 import type {
   MonthPage,
-  PopoverEventsOptions,
   PopoverPosition,
   PopoverVisibility,
   WeeknumbersVisibility,
@@ -64,7 +63,7 @@ const navPlacement = computed(() => {
 
 // keep the events in sync
 const navEvents = computed(() => {
-  return definePopoverEvents({
+  return serializePopoverEvents({
     id: navPopoverId.value,
     // TODO: puede haber mejor manera de pasar la informacion
     data: { page: props.page, position: props.position },
@@ -95,7 +94,7 @@ export default {
 
     // * CalendarPage Header
     const header =
-      this.callSlot('header', { page: this.page }) ||
+      this.callSlot('header', this.page) ||
       // Default CalendarPage Header
       h('div', { class: ['vc-header', `align-${this.titlePosition}`] }, title);
 
