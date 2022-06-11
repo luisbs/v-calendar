@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { getDefault } from '../../utils/defaults';
 import { useCommons } from '../../composables/useCommons';
-import { usePopover } from '../../composables/usePopover';
+import { serializePopoverEvents } from '../../composables/usePopover';
 import { useSlots } from '../../composables/useVue';
 import type { Day } from '~/data';
 import type {
@@ -33,12 +33,6 @@ const props = withDefaults(defineProps<CalendarPage>(), {
 
 const { callSlot } = useSlots();
 const { navPopoverId } = useCommons();
-const serializePopoverEvents = usePopover({
-  id: navPopoverId.value,
-  visibility: props.navVisibility,
-  modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom'] } }],
-  isInteractive: true,
-});
 
 // serialize the `show-weeknumbers` props
 const options = computed(() => {
@@ -70,9 +64,13 @@ const navPlacement = computed(() => {
 // keep the events in sync
 const navEvents = computed(() => {
   return serializePopoverEvents({
+    id: navPopoverId.value,
     // TODO: puede haber mejor manera de pasar la informacion
     data: { page: props.page, position: props.position },
     placement: navPlacement.value,
+    visibility: props.navVisibility,
+    modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom'] } }],
+    isInteractive: true,
   });
 });
 

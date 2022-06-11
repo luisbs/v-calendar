@@ -1,4 +1,3 @@
-import { ref } from 'vue';
 import { elementContains } from '../utils/helpers';
 import type { PopoverEventsOptions } from '~/options';
 
@@ -6,92 +5,84 @@ function dispatchEvent(name: string, options: CustomEventInit) {
   document?.dispatchEvent(new CustomEvent(name, options));
 }
 
-export function usePopover(defaults: Partial<PopoverEventsOptions>) {
-  const options = ref(defaults);
+export function serializePopoverEvents(opts: PopoverEventsOptions) {
+  const { visibility } = opts;
 
-  // merge Popover Options
-  function prepareOptions(opts: Partial<PopoverEventsOptions>) {
-    options.value = { ...defaults, ...opts };
+  const useClick = visibility === 'click';
+  const useHover = visibility === 'hover' || visibility === 'hover-focus';
+  const useFocus = visibility === 'focus' || visibility === 'hover-focus';
+  opts.autoHide = !useClick;
 
-    const { visibility } = options.value;
-    const useClick = visibility === 'click';
-    const useHover = visibility === 'hover' || visibility === 'hover-focus';
-    const useFocus = visibility === 'focus' || visibility === 'hover-focus';
-
-    options.value.autoHide = !useClick;
-
-    return { useClick, useHover, useFocus };
-  }
+  let lastItem = '';
+  let hovered = false;
+  let focused = false;
 
   // prepare the popover options
-  const preparePopover = (target: EventTarget | null, forceUpdate = false) => {
+  const preparePopoverOptions = (
+    target: EventTarget | null,
+    options: PopoverEventsOptions,
+    forceUpdate = false,
+  ) => {
     const current = (target as HTMLElement)?.dataset.popover || '';
-    const sameItem = options.value.data.popover === current;
+    const sameItem = lastItem === current;
+    lastItem = current;
 
-    options.value.data.popover = current;
-    options.value.ref = target;
+    options.data.popover = current;
+    options.ref = target;
 
     if (!forceUpdate || sameItem) return;
 
-    dispatchEvent('hide-popover', { detail: options.value });
+    dispatchEvent('hide-popover', { detail: options });
   };
 
-  // initialize Popover Events
-  return (opts: Partial<PopoverEventsOptions>) => {
-    const { useClick, useHover, useFocus } = prepareOptions(opts);
+  return {
+    onClick(ev: MouseEvent) {
+      if (useClick) {
+        preparePopoverOptions(ev.target, opts, true);
+        dispatchEvent('toggle-popover', { detail: opts });
+        ev.stopPropagation();
+      }
+    },
 
-    let hovered = false;
-    let focused = false;
+    onMousemove(ev: MouseEvent) {
+      if (useHover && !hovered) {
+        hovered = true;
+        preparePopoverOptions(ev.currentTarget, opts);
+        dispatchEvent('show-popover', { detail: opts });
+      }
+    },
+    onMouseleave(ev: MouseEvent) {
+      if (useHover && hovered) {
+        hovered = false;
+        if (!useFocus || !focused) {
+          preparePopoverOptions(ev.target, opts);
+          dispatchEvent('hide-popover', { detail: opts });
+        }
+      }
+    },
 
-    return {
-      onClick(ev: MouseEvent) {
-        if (useClick) {
-          preparePopover(ev.target, true);
-          dispatchEvent('toggle-popover', { detail: options.value });
-          ev.stopPropagation();
+    onFocusin(ev: FocusEvent) {
+      if (useFocus && !focused) {
+        focused = true;
+        preparePopoverOptions(ev.currentTarget, opts);
+        dispatchEvent('show-popover', { detail: opts });
+      }
+    },
+    onFocusout(ev: FocusEvent) {
+      if (
+        useFocus &&
+        focused &&
+        !elementContains(
+          ev.currentTarget as Element,
+          ev.relatedTarget as Element,
+        )
+      ) {
+        focused = false;
+        if (!useHover || !hovered) {
+          preparePopoverOptions(ev.currentTarget, opts);
+          dispatchEvent('hide-popover', { detail: opts });
         }
-      },
-
-      onMousemove(ev: MouseEvent) {
-        if (useHover && !hovered) {
-          hovered = true;
-          preparePopover(ev.currentTarget);
-          dispatchEvent('show-popover', { detail: options.value });
-        }
-      },
-      onMouseleave(ev: MouseEvent) {
-        if (useHover && hovered) {
-          hovered = false;
-          if (!useFocus || !focused) {
-            preparePopover(ev.target);
-            dispatchEvent('hide-popover', { detail: options.value });
-          }
-        }
-      },
-
-      onFocusin(ev: FocusEvent) {
-        if (useFocus && !focused) {
-          focused = true;
-          preparePopover(ev.currentTarget);
-          dispatchEvent('show-popover', { detail: options.value });
-        }
-      },
-      onFocusout(ev: FocusEvent) {
-        if (
-          useFocus &&
-          focused &&
-          !elementContains(
-            ev.currentTarget as Element,
-            ev.relatedTarget as Element,
-          )
-        ) {
-          focused = false;
-          if (!useHover || !hovered) {
-            preparePopover(ev.currentTarget);
-            dispatchEvent('hide-popover', { detail: options.value });
-          }
-        }
-      },
-    };
+      }
+    },
   };
 }
