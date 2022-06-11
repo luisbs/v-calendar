@@ -126,10 +126,11 @@ export default {
         {
           // Navigation pane
           default: ({ data }) => {
-            const { position, page } = data;
+            const { popover, position, page } = data;
             return (
               // allow custom popover from user
               this.safeSlot('calendar-popover', {
+                popover,
                 position,
                 modelValue: page,
                 validator: e => this.canMove(e, { position }),
