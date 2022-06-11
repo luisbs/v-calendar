@@ -7,43 +7,41 @@ function dispatchEvent(name: string, options: CustomEventInit) {
 }
 
 export function usePopover(defaults: Partial<PopoverEventsOptions>) {
+  const options = ref(defaults);
+
   // merge Popover Options
   function prepareOptions(opts: Partial<PopoverEventsOptions>) {
-    const options = { ...defaults, ...opts };
-    const { visibility } = options;
+    options.value = { ...defaults, ...opts };
 
+    const { visibility } = options.value;
     const useClick = visibility === 'click';
     const useHover = visibility === 'hover' || visibility === 'hover-focus';
     const useFocus = visibility === 'focus' || visibility === 'hover-focus';
 
-    options.autoHide = !useClick;
+    options.value.autoHide = !useClick;
 
-    return { options: ref(options), useClick, useHover, useFocus };
+    return { useClick, useHover, useFocus };
   }
+
+  // prepare the popover options
+  const preparePopover = (target: EventTarget | null, forceUpdate = false) => {
+    const current = (target as HTMLElement)?.dataset.popover || '';
+    const sameItem = options.value.data.popover === current;
+
+    options.value.data.popover = current;
+    options.value.ref = target;
+
+    if (!forceUpdate || sameItem) return;
+
+    dispatchEvent('hide-popover', { detail: options.value });
+  };
 
   // initialize Popover Events
   return (opts: Partial<PopoverEventsOptions>) => {
-    const { options, useClick, useHover, useFocus } = prepareOptions(opts);
+    const { useClick, useHover, useFocus } = prepareOptions(opts);
 
-    let lastItem = '';
     let hovered = false;
     let focused = false;
-
-    const preparePopover = (
-      target: EventTarget | null,
-      forceUpdate = false,
-    ) => {
-      const current = (target as HTMLElement)?.dataset.popover || '';
-      const sameItem = lastItem === current;
-      lastItem = current;
-
-      options.value.data.popover = current;
-      options.value.ref = target;
-
-      if (!forceUpdate || sameItem) return;
-
-      dispatchEvent('hide-popover', { detail: options.value });
-    };
 
     return {
       onClick(ev: MouseEvent) {
