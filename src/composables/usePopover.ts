@@ -6,30 +6,24 @@ function dispatchEvent(name: string, options: CustomEventInit) {
   document?.dispatchEvent(new CustomEvent(name, options));
 }
 
-function preparePopoverOptions(
-  defaults: Partial<PopoverEventsOptions>,
-  opts: Partial<PopoverEventsOptions>,
-) {
-  const options = { ...defaults, ...opts };
-  const { visibility } = options;
-
-  const useClick = visibility === 'click';
-  const useHover = visibility === 'hover' || visibility === 'hover-focus';
-  const useFocus = visibility === 'focus' || visibility === 'hover-focus';
-
-  options.autoHide = !useClick;
-
-  return { options: ref(options), useClick, useHover, useFocus };
-}
-
 export function usePopover(defaults: Partial<PopoverEventsOptions>) {
+  // merge Popover Options
+  function prepareOptions(opts: Partial<PopoverEventsOptions>) {
+    const options = { ...defaults, ...opts };
+    const { visibility } = options;
+
+    const useClick = visibility === 'click';
+    const useHover = visibility === 'hover' || visibility === 'hover-focus';
+    const useFocus = visibility === 'focus' || visibility === 'hover-focus';
+
+    options.autoHide = !useClick;
+
+    return { options: ref(options), useClick, useHover, useFocus };
+  }
+
+  // initialize Popover Events
   return (opts: Partial<PopoverEventsOptions>) => {
-    const {
-      options, //
-      useClick,
-      useHover,
-      useFocus,
-    } = preparePopoverOptions(defaults, opts);
+    const { options, useClick, useHover, useFocus } = prepareOptions(opts);
 
     let lastItem = '';
     let hovered = false;
