@@ -94,12 +94,12 @@ onMounted(() => {
 
 // exposed values
 defineExpose({
-  ...toRefs(options),
-  hasSlot,
-  callSlot,
-
+  options,
   dayContent,
   dayEvents,
+
+  hasSlot,
+  callSlot,
 });
 </script>
 
@@ -137,8 +137,8 @@ export default {
     const layers = [];
 
     // * Backgrounds Layer
-    if (this.backgrounds?.length) {
-      const backgrounds = this.backgrounds.map(
+    if (this.options.backgrounds?.length) {
+      const backgrounds = this.options.backgrounds.map(
         ({ key, class: backgroundClass, wrapperClass, style }) => {
           return h('div', { key, class: wrapperClass }, [
             h('div', { class: backgroundClass, style }),
@@ -163,7 +163,7 @@ export default {
     }
     // Default Content
     else {
-      const dayContent = this.content?.at(-1);
+      const dayContent = this.options.content?.at(-1);
       const dayContentClass = [
         'vc-day-content vc-focusable',
         this.day.isDisabled && 'is-disabled',
@@ -182,8 +182,8 @@ export default {
     }
 
     // * Dots Layer
-    if (this.dots?.length) {
-      const dots = this.dots.map(({ wrapperClass, ...args }) => {
+    if (this.options.dots?.length) {
+      const dots = this.options.dots.map(({ wrapperClass, ...args }) => {
         return h('span', args);
       });
 
@@ -197,8 +197,8 @@ export default {
     }
 
     // * Bars Layer
-    if (this.bars?.length) {
-      const bars = this.bars.map(({ wrapperClass, ...args }) => {
+    if (this.options.bars?.length) {
+      const bars = this.options.bars.map(({ wrapperClass, ...args }) => {
         return h('span', args);
       });
 
