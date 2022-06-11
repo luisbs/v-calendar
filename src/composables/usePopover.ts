@@ -13,32 +13,31 @@ export function serializePopoverEvents(opts: PopoverEventsOptions) {
   const useFocus = visibility === 'focus' || visibility === 'hover-focus';
   opts.autoHide = !useClick;
 
-  let lastItem = '';
+  let lastPopover = '';
   let hovered = false;
   let focused = false;
 
   // prepare the popover options
   const preparePopoverOptions = (
     target: EventTarget | null,
-    options: PopoverEventsOptions,
     forceUpdate = false,
   ) => {
-    const current = (target as HTMLElement)?.dataset.popover || '';
-    const sameItem = lastItem === current;
-    lastItem = current;
+    const popover = (target as HTMLElement)?.dataset.popover || '';
+    const sameItem = lastPopover === popover;
+    lastPopover = popover;
 
-    options.data.popover = current;
-    options.ref = target;
+    opts.ref = target;
+    opts.data = { ...opts.data, popover };
 
     if (!forceUpdate || sameItem) return;
 
-    dispatchEvent('hide-popover', { detail: options });
+    dispatchEvent('hide-popover', { detail: opts });
   };
 
   return {
     onClick(ev: MouseEvent) {
       if (useClick) {
-        preparePopoverOptions(ev.target, opts, true);
+        preparePopoverOptions(ev.target, true);
         dispatchEvent('toggle-popover', { detail: opts });
         ev.stopPropagation();
       }
@@ -47,7 +46,7 @@ export function serializePopoverEvents(opts: PopoverEventsOptions) {
     onMousemove(ev: MouseEvent) {
       if (useHover && !hovered) {
         hovered = true;
-        preparePopoverOptions(ev.currentTarget, opts);
+        preparePopoverOptions(ev.currentTarget);
         dispatchEvent('show-popover', { detail: opts });
       }
     },
@@ -55,7 +54,7 @@ export function serializePopoverEvents(opts: PopoverEventsOptions) {
       if (useHover && hovered) {
         hovered = false;
         if (!useFocus || !focused) {
-          preparePopoverOptions(ev.target, opts);
+          preparePopoverOptions(ev.target);
           dispatchEvent('hide-popover', { detail: opts });
         }
       }
@@ -64,7 +63,7 @@ export function serializePopoverEvents(opts: PopoverEventsOptions) {
     onFocusin(ev: FocusEvent) {
       if (useFocus && !focused) {
         focused = true;
-        preparePopoverOptions(ev.currentTarget, opts);
+        preparePopoverOptions(ev.currentTarget);
         dispatchEvent('show-popover', { detail: opts });
       }
     },
@@ -79,7 +78,7 @@ export function serializePopoverEvents(opts: PopoverEventsOptions) {
       ) {
         focused = false;
         if (!useHover || !hovered) {
-          preparePopoverOptions(ev.currentTarget, opts);
+          preparePopoverOptions(ev.currentTarget);
           dispatchEvent('hide-popover', { detail: opts });
         }
       }
