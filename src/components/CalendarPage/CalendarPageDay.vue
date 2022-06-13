@@ -37,7 +37,7 @@ const options = reactive<Partial<ReturnType<typeof serializeDayStyles>>>({});
 // generate events for user interaction
 const newEvent = (name: EventsEnum) => (ev: Event) => {
   const params = {
-    day: props.day,
+    ...props.day,
     el: dayContent.value,
     popovers: options.popovers,
   };
