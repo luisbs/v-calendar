@@ -1,9 +1,10 @@
 .DS_Store
 node_modules
-/dist
 /lib
 docs/.vuepress/dist
 /testumdbuild
+
+# /dist
 
 # local env files
 .env.local
