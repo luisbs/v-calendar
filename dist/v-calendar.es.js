@@ -7545,7 +7545,7 @@ function serializeDayStyles(day) {
       isDate: isDate2,
       isComplex,
       onStart: day.range.start <= startTime,
-      onEnd: day.range.end <= endTime
+      onEnd: day.range.end >= endTime
     };
     appendBackgroundStyles(attr, info, options.backgrounds);
     appendContentStyles(attr, info, options.content);

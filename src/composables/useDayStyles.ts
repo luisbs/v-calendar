@@ -168,7 +168,7 @@ export function serializeDayStyles(day: Day) {
       isDate,
       isComplex,
       onStart: day.range.start <= startTime,
-      onEnd: day.range.end <= endTime,
+      onEnd: day.range.end >= endTime,
     };
 
     // append styles
